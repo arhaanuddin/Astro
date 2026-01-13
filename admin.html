@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Astronet</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="admin-body">
+    <!-- Animated Star Background -->
+    <div class="star-field">
+        <div class="stars-layer stars-small"></div>
+        <div class="stars-layer stars-medium"></div>
+        <div class="stars-layer stars-large"></div>
+    </div>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">ASTRONET</a>
+                <span class="admin-badge">Admin</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#events" class="nav-item" data-section="events">
+                    <span class="nav-icon">🔭</span>
+                    <span>Events</span>
+                </a>
+                <a href="#gallery" class="nav-item" data-section="gallery">
+                    <span class="nav-icon">📸</span>
+                    <span>Gallery</span>
+                </a>
+                <a href="#users" class="nav-item" data-section="users">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </a>
+                <a href="#settings" class="nav-item" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-user">
+                    <div class="user-avatar">👨‍💼</div>
+                    <div class="user-info">
+                        <span class="user-name" id="adminName">Admin</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <span>Logout</span>
+                    <span>🚪</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button id="sidebarToggle" class="sidebar-toggle">☰</button>
+                    <h1 class="page-title-admin" id="sectionTitle">Dashboard</h1>
+                </div>
+                <div class="topbar-right">
+                    <span class="current-time" id="currentTime"></span>
+                    <a href="index.html" class="btn btn-outline btn-sm">View Site →</a>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="admin-section active">
+                <div class="dashboard-grid">
+                    <!-- Stats Cards -->
+                    <div class="admin-stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-content">
+                            <span class="stat-value">15</span>
+                            <span class="stat-label">Total Members</span>
+                        </div>
+                        <span class="stat-trend positive">+12%</span>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <div class="stat-icon">🔭</div>
+                        <div class="stat-content">
+                            <span class="stat-value">4</span>
+                            <span class="stat-label">Upcoming Events</span>
+                        </div>
+                        <span class="stat-trend positive">+3</span>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <div class="stat-icon">📸</div>
+                        <div class="stat-content">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">Gallery Items</span>
+                        </div>
+                        <span class="stat-trend positive">+0</span>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <div class="stat-icon">👁️</div>
+                        <div class="stat-content">
+                            <span class="stat-value">50</span>
+                            <span class="stat-label">Page Views</span>
+                        </div>
+                        <span class="stat-trend positive">+18%</span>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="admin-card">
+                    <h3 class="card-title">Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="showSection('events')">
+                            <span class="action-icon">📅</span>
+                            <span>Add Event</span>
+                        </button>
+                        <button class="action-btn" onclick="showSection('gallery')">
+                            <span class="action-icon">🖼️</span>
+                            <span>Upload Photo</span>
+                        </button>
+                        <button class="action-btn" onclick="showSection('users')">
+                            <span class="action-icon">➕</span>
+                            <span>Add Member</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">📧</span>
+                            <span>Send Newsletter</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="admin-card">
+                    <h3 class="card-title">Recent Activity</h3>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <span class="activity-icon">🎉</span>
+                            <div class="activity-content">
+                                <p>New member <strong>John Doe</strong> registered</p>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-icon">📸</span>
+                            <div class="activity-content">
+                                <p>3 new photos uploaded to <strong>Andromeda Gallery</strong></p>
+                                <span class="activity-time">5 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-icon">🔭</span>
+                            <div class="activity-content">
+                                <p>Event <strong>Lunar Eclipse Observation</strong> created</p>
+                                <span class="activity-time">1 day ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-icon">✅</span>
+                            <div class="activity-content">
+                                <p><strong>15 registrations</strong> for Stargazing Night</p>
+                                <span class="activity-time">2 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Events Section -->
+            <section id="events" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>Manage Events</h2>
+                    <button class="btn btn-primary">+ Add New Event</button>
+                </div>
+
+                <div class="admin-card">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Registrations</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Total Lunar Eclipse Observation</td>
+                                <td>Jan 15, 2025</td>
+                                <td>Main Observatory</td>
+                                <td>45</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td class="actions">
+                                    <button class="action-btn-sm">✏️</button>
+                                    <button class="action-btn-sm danger">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Beginner's Workshop</td>
+                                <td>Jan 28, 2025</td>
+                                <td>Lecture Hall A</td>
+                                <td>22</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td class="actions">
+                                    <button class="action-btn-sm">✏️</button>
+                                    <button class="action-btn-sm danger">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Deep Sky Observation</td>
+                                <td>Feb 22, 2025</td>
+                                <td>Dark Sky Site</td>
+                                <td>18</td>
+                                <td><span class="status-badge pending">Upcoming</span></td>
+                                <td class="actions">
+                                    <button class="action-btn-sm">✏️</button>
+                                    <button class="action-btn-sm danger">🗑️</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Gallery Section -->
+            <section id="gallery" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>Manage Gallery</h2>
+                    <button class="btn btn-primary">+ Upload Images</button>
+                </div>
+
+                <div class="admin-card">
+                    <div class="gallery-admin-grid">
+                        <div class="gallery-admin-item">
+                            <div class="gallery-thumb">🌌</div>
+                            <div class="gallery-info">
+                                <span class="gallery-name">Andromeda Galaxy</span>
+                                <span class="gallery-category">Deep Space</span>
+                            </div>
+                            <div class="gallery-actions">
+                                <button class="action-btn-sm">✏️</button>
+                                <button class="action-btn-sm danger">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="gallery-admin-item">
+                            <div class="gallery-thumb">🌕</div>
+                            <div class="gallery-info">
+                                <span class="gallery-name">Lunar Surface Detail</span>
+                                <span class="gallery-category">Moon</span>
+                            </div>
+                            <div class="gallery-actions">
+                                <button class="action-btn-sm">✏️</button>
+                                <button class="action-btn-sm danger">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="gallery-admin-item">
+                            <div class="gallery-thumb">🪐</div>
+                            <div class="gallery-info">
+                                <span class="gallery-name">Saturn's Rings</span>
+                                <span class="gallery-category">Planets</span>
+                            </div>
+                            <div class="gallery-actions">
+                                <button class="action-btn-sm">✏️</button>
+                                <button class="action-btn-sm danger">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>Manage Users</h2>
+                    <button class="btn btn-primary">+ Add Member</button>
+                </div>
+
+                <div class="admin-card">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Joined</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <span class="user-avatar-sm">👨</span>
+                                        <span>John Doe</span>
+                                    </div>
+                                </td>
+                                <td>john@example.com</td>
+                                <td>Member</td>
+                                <td>Jan 10, 2025</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td class="actions">
+                                    <button class="action-btn-sm">✏️</button>
+                                    <button class="action-btn-sm danger">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <span class="user-avatar-sm">👩</span>
+                                        <span>Jane Smith</span>
+                                    </div>
+                                </td>
+                                <td>jane@example.com</td>
+                                <td>Member</td>
+                                <td>Dec 15, 2024</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td class="actions">
+                                    <button class="action-btn-sm">✏️</button>
+                                    <button class="action-btn-sm danger">🗑️</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="user-cell">
+                                        <span class="user-avatar-sm">👨‍💼</span>
+                                        <span>Admin User</span>
+                                    </div>
+                                </td>
+                                <td>admin@astronet.org</td>
+                                <td>Administrator</td>
+                                <td>Jan 1, 2024</td>
+                                <td><span class="status-badge active">Active</span></td>
+                                <td class="actions">
+                                    <button class="action-btn-sm">✏️</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="admin-card">
+                        <h3 class="card-title">Site Settings</h3>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>Site Name</label>
+                                <input type="text" value="ASTRONET" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Email</label>
+                                <input type="email" value="hello@astronet.org" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Max Event Registrations</label>
+                                <input type="number" value="100" class="admin-input">
+                            </div>
+                            <button class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3 class="card-title">Account Settings</h3>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>Admin Username</label>
+                                <input type="text" value="admin" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" placeholder="Enter new password" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" placeholder="Confirm new password" class="admin-input">
+                            </div>
+                            <button class="btn btn-primary">Update Password</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Auth check
+        if (!localStorage.getItem('astronetAdmin')) {
+            window.location.href = 'login.html';
+        }
+
+        // Display admin name
+        const adminData = JSON.parse(localStorage.getItem('astronetAdmin') || '{}');
+        if (adminData.username) {
+            document.getElementById('adminName').textContent = adminData.username;
+        }
+
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('currentTime').textContent = now.toLocaleString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        updateTime();
+        setInterval(updateTime, 60000);
+
+        // Section navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(sectionId).classList.add('active');
+            document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+
+            const titles = {
+                dashboard: 'Dashboard',
+                events: 'Events Management',
+                gallery: 'Gallery Management',
+                users: 'User Management',
+                settings: 'Settings'
+            };
+            document.getElementById('sectionTitle').textContent = titles[sectionId] || 'Dashboard';
+        }
+
+        // Sidebar navigation clicks
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function (e) {
+                e.preventDefault();
+                showSection(this.dataset.section);
+            });
+        });
+
+        // Sidebar toggle for mobile
+        document.getElementById('sidebarToggle').addEventListener('click', function () {
+            document.querySelector('.admin-sidebar').classList.toggle('open');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            localStorage.removeItem('astronetAdmin');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+
+</html>
