@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning - Astronet</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Animated Star Background -->
+    <div class="star-field">
+        <div class="stars-layer stars-small"></div>
+        <div class="stars-layer stars-medium"></div>
+        <div class="stars-layer stars-large"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">ASTRONET</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="learning.html" class="active">Learning</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1 class="page-title">Learning <span class="gradient-text">Center</span></h1>
+        <p class="page-subtitle">Educational resources to expand your knowledge of astronomy and space science</p>
+    </section>
+
+    <!-- Learning Content -->
+    <section class="page-content">
+        <div class="container">
+            <!-- Learning Categories -->
+            <div class="learning-categories">
+                <div class="learning-category-card">
+                    <div class="category-icon">🔭</div>
+                    <h3>Beginner Guides</h3>
+                    <p>Start your astronomy journey with our beginner-friendly resources</p>
+                    <span class="category-count">12 Resources</span>
+                </div>
+                <div class="learning-category-card">
+                    <div class="category-icon">🌟</div>
+                    <h3>Advanced Topics</h3>
+                    <p>Deep dive into complex astronomical concepts</p>
+                    <span class="category-count">18 Resources</span>
+                </div>
+                <div class="learning-category-card">
+                    <div class="category-icon">📷</div>
+                    <h3>Astrophotography</h3>
+                    <p>Learn to capture stunning images of the cosmos</p>
+                    <span class="category-count">8 Resources</span>
+                </div>
+                <div class="learning-category-card">
+                    <div class="category-icon">🛠️</div>
+                    <h3>Equipment Guides</h3>
+                    <p>Choose and use telescopes, cameras, and accessories</p>
+                    <span class="category-count">15 Resources</span>
+                </div>
+            </div>
+
+            <!-- Featured Courses -->
+            <div class="section-header" style="margin-top: 80px;">
+                <h2>Featured <span class="gradient-text">Courses</span></h2>
+                <p>Self-paced learning modules created by our experts</p>
+            </div>
+
+            <div class="courses-grid">
+                <div class="course-card">
+                    <div class="course-image ci-1">
+                        <span class="course-level beginner">Beginner</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Introduction to Astronomy</h3>
+                        <p>Learn the fundamentals of astronomy, from basic concepts to understanding celestial
+                            mechanics.</p>
+                        <div class="course-meta">
+                            <span>📚 10 Lessons</span>
+                            <span>⏱️ 5 Hours</span>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span>Not Started</span>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm">Start Course</a>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-image ci-2">
+                        <span class="course-level beginner">Beginner</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Navigating the Night Sky</h3>
+                        <p>Master the art of finding constellations, planets, and deep sky objects without equipment.
+                        </p>
+                        <div class="course-meta">
+                            <span>📚 8 Lessons</span>
+                            <span>⏱️ 4 Hours</span>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                            <span>65% Complete</span>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm">Continue</a>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-image ci-3">
+                        <span class="course-level intermediate">Intermediate</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Telescope Mastery</h3>
+                        <p>Everything you need to know about choosing, setting up, and using different types of
+                            telescopes.</p>
+                        <div class="course-meta">
+                            <span>📚 12 Lessons</span>
+                            <span>⏱️ 6 Hours</span>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%"></div>
+                            </div>
+                            <span>30% Complete</span>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm">Continue</a>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-image ci-4">
+                        <span class="course-level intermediate">Intermediate</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Astrophotography Basics</h3>
+                        <p>Capture stunning images of the night sky with your camera and basic equipment.</p>
+                        <div class="course-meta">
+                            <span>📚 15 Lessons</span>
+                            <span>⏱️ 8 Hours</span>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span>Not Started</span>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm">Start Course</a>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-image ci-5">
+                        <span class="course-level advanced">Advanced</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Stellar Evolution</h3>
+                        <p>Understand the life cycle of stars, from formation to spectacular endings like supernovae.
+                        </p>
+                        <div class="course-meta">
+                            <span>📚 14 Lessons</span>
+                            <span>⏱️ 7 Hours</span>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span>Not Started</span>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm">Start Course</a>
+                    </div>
+                </div>
+
+                <div class="course-card">
+                    <div class="course-image ci-6">
+                        <span class="course-level advanced">Advanced</span>
+                    </div>
+                    <div class="course-content">
+                        <h3>Cosmology & The Universe</h3>
+                        <p>Explore the origin, structure, and fate of our universe from the Big Bang to the present.</p>
+                        <div class="course-meta">
+                            <span>📚 20 Lessons</span>
+                            <span>⏱️ 10 Hours</span>
+                        </div>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span>Not Started</span>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-sm">Start Course</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Section -->
+            <div class="section-header" style="margin-top: 80px;">
+                <h2>Quick <span class="gradient-text">Resources</span></h2>
+                <p>Downloadable guides and reference materials</p>
+            </div>
+
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-icon">🗺️</div>
+                    <div class="resource-content">
+                        <h4>Monthly Star Maps</h4>
+                        <p>Printable star charts for current month</p>
+                        <a href="#" class="resource-link">Download PDF →</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">📋</div>
+                    <div class="resource-content">
+                        <h4>Messier Objects Checklist</h4>
+                        <p>Track your observations of all 110 objects</p>
+                        <a href="#" class="resource-link">Download PDF →</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">🔭</div>
+                    <div class="resource-content">
+                        <h4>Telescope Buying Guide</h4>
+                        <p>Complete guide to choosing your first telescope</p>
+                        <a href="#" class="resource-link">Download PDF →</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-icon">🌙</div>
+                    <div class="resource-content">
+                        <h4>Moon Phase Calendar</h4>
+                        <p>Plan your observations around lunar phases</p>
+                        <a href="#" class="resource-link">Download PDF →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">ASTRONET</a>
+                <p>Exploring the universe together since 2014.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-link">FB</a>
+                    <a href="#" class="social-link">IG</a>
+                    <a href="#" class="social-link">TW</a>
+                    <a href="#" class="social-link">YT</a>
+                </div>
+            </div>
+            <div class="footer-links-group">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="learning.html">Learning</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Telescope Guide</a></li>
+                    <li><a href="#">Star Maps</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:hello@astronet.org">hello@astronet.org</a></li>
+                    <li><a href="#">+1 (555) 123-4567</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Astronet Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
