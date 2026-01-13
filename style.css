@@ -2437,7 +2437,7 @@ a {
    ADMIN DASHBOARD
    ======================================== */
 .admin-body {
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 .admin-layout {
