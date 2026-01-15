@@ -249,6 +249,29 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Add member-submitted images to gallery
+        document.addEventListener('DOMContentLoaded', function () {
+            const galleryGrid = document.querySelector('.gallery-grid');
+            const approvedSubmissions = AstroAuth.getApprovedSubmissions();
+
+            approvedSubmissions.forEach(submission => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.setAttribute('data-category', submission.category);
+                item.innerHTML = `
+                    <div class="gallery-image" style="background-image: url('${submission.imageData}'); background-size: cover; background-position: center;"></div>
+                    <div class="gallery-info">
+                        <h3>${submission.title}</h3>
+                        <p>${submission.description || 'Community submission'}</p>
+                        <span class="gallery-tag">Community</span>
+                    </div>
+                `;
+                galleryGrid.appendChild(item);
+            });
+        });
+    </script>
 </body>
 
 </html>

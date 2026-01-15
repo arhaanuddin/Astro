@@ -304,6 +304,13 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Protect this page - members only
+        if (!AstroAuth.requireMember()) {
+            // Redirect is handled by requireMember
+        }
+    </script>
 </body>
 
 </html>

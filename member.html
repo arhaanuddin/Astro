@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Dashboard - Astronet</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="member-body">
+    <!-- Animated Star Background -->
+    <div class="star-field">
+        <div class="stars-layer stars-small"></div>
+        <div class="stars-layer stars-medium"></div>
+        <div class="stars-layer stars-large"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">ASTRONET</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="learning.html">Learning</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="member.html" class="nav-login active">Dashboard</a></li>
+            <li><a href="#" class="nav-logout" onclick="AstroAuth.logout(); return false;">Logout</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Member Dashboard -->
+    <section class="page-header">
+        <h1 class="page-title">Welcome, <span class="gradient-text" id="memberName">Member</span></h1>
+        <p class="page-subtitle">Your personal astronomy dashboard</p>
+    </section>
+
+    <section class="page-content">
+        <div class="container">
+            <!-- Quick Stats -->
+            <div class="member-stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="coursesProgress">0</span>
+                    <span class="stat-label">Courses In Progress</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="submissionsCount">0</span>
+                    <span class="stat-label">Gallery Submissions</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="approvedCount">0</span>
+                    <span class="stat-label">Approved Photos</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="pendingCount">0</span>
+                    <span class="stat-label">Pending Review</span>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="member-quick-links">
+                <a href="events.html" class="quick-link-card">
+                    <div class="card-icon">🔭</div>
+                    <h3>Upcoming Events</h3>
+                    <p>View and register for observation nights and workshops</p>
+                    <span class="card-arrow">View Events →</span>
+                </a>
+                <a href="learning.html" class="quick-link-card">
+                    <div class="card-icon">📚</div>
+                    <h3>Learning Center</h3>
+                    <p>Continue your astronomy education journey</p>
+                    <span class="card-arrow">Start Learning →</span>
+                </a>
+            </div>
+
+            <!-- Gallery Submission Section -->
+            <div class="section-header" style="margin-top: 60px;">
+                <h2>Submit to <span class="gradient-text">Gallery</span></h2>
+                <p>Share your astrophotography with the community</p>
+            </div>
+
+            <div class="submission-section">
+                <div class="submission-form-card">
+                    <h3>📸 Upload New Image</h3>
+                    <form id="gallerySubmissionForm" class="gallery-submission-form">
+                        <div class="form-group">
+                            <label for="imageFile">Select Image</label>
+                            <div class="file-upload-wrapper">
+                                <input type="file" id="imageFile" accept="image/*" required>
+                                <div class="file-upload-preview" id="imagePreview">
+                                    <span>Click or drag to upload image</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageTitle">Title</label>
+                            <input type="text" id="imageTitle" placeholder="e.g., Orion Nebula" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageCategory">Category</label>
+                            <select id="imageCategory" required>
+                                <option value="">Select category</option>
+                                <option value="astro">Astrophotography</option>
+                                <option value="events">Events</option>
+                                <option value="workshops">Workshops</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="imageDescription">Description</label>
+                            <textarea id="imageDescription" rows="3"
+                                placeholder="Tell us about this photo..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <span>Submit for Review</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- My Submissions -->
+                <div class="my-submissions-card">
+                    <h3>📋 My Submissions</h3>
+                    <div id="mySubmissionsList" class="submissions-list">
+                        <p class="empty-state">No submissions yet. Share your first photo!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">ASTRONET</a>
+                <p>Exploring the universe together since 2014.</p>
+            </div>
+            <div class="footer-links-group">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="learning.html">Learning</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:hello@astronet.org">hello@astronet.org</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Astronet Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Auth check - require member access
+        if (!AstroAuth.requireMember()) {
+            // Redirect handled by requireMember
+        } else {
+            // Initialize dashboard
+            const user = AstroAuth.getCurrentUser();
+            document.getElementById('memberName').textContent = user.name || user.username;
+
+            // Update stats
+            function updateStats() {
+                const mySubmissions = AstroAuth.getMySubmissions();
+                const approved = mySubmissions.filter(s => s.status === 'approved').length;
+                const pending = mySubmissions.filter(s => s.status === 'pending').length;
+
+                document.getElementById('submissionsCount').textContent = mySubmissions.length;
+                document.getElementById('approvedCount').textContent = approved;
+                document.getElementById('pendingCount').textContent = pending;
+            }
+
+            // Load my submissions
+            function loadMySubmissions() {
+                const container = document.getElementById('mySubmissionsList');
+                const submissions = AstroAuth.getMySubmissions();
+
+                if (submissions.length === 0) {
+                    container.innerHTML = '<p class="empty-state">No submissions yet. Share your first photo!</p>';
+                    return;
+                }
+
+                container.innerHTML = submissions.map(s => `
+                    <div class="submission-item ${s.status}">
+                        <div class="submission-thumb">
+                            <img src="${s.imageData}" alt="${s.title}">
+                        </div>
+                        <div class="submission-info">
+                            <h4>${s.title}</h4>
+                            <span class="submission-category">${s.category}</span>
+                            <span class="submission-status status-${s.status}">${s.status}</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Image preview functionality
+            const imageInput = document.getElementById('imageFile');
+            const imagePreview = document.getElementById('imagePreview');
+
+            imageInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                        imagePreview.classList.add('has-image');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Drag and drop
+            imagePreview.addEventListener('click', () => imageInput.click());
+            imagePreview.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                imagePreview.classList.add('dragover');
+            });
+            imagePreview.addEventListener('dragleave', () => {
+                imagePreview.classList.remove('dragover');
+            });
+            imagePreview.addEventListener('drop', (e) => {
+                e.preventDefault();
+                imagePreview.classList.remove('dragover');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    imageInput.files = e.dataTransfer.files;
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                        imagePreview.classList.add('has-image');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Form submission
+            document.getElementById('gallerySubmissionForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const file = imageInput.files[0];
+                if (!file) {
+                    alert('Please select an image');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const result = AstroAuth.submitGalleryImage(
+                        e.target.result,
+                        document.getElementById('imageTitle').value,
+                        document.getElementById('imageDescription').value,
+                        document.getElementById('imageCategory').value
+                    );
+
+                    if (result.success) {
+                        alert('Image submitted successfully! It will appear in the gallery after admin approval.');
+                        document.getElementById('gallerySubmissionForm').reset();
+                        imagePreview.innerHTML = '<span>Click or drag to upload image</span>';
+                        imagePreview.classList.remove('has-image');
+                        updateStats();
+                        loadMySubmissions();
+                    } else {
+                        alert('Error: ' + result.error);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Initialize
+            updateStats();
+            loadMySubmissions();
+        }
+    </script>
+</body>
+
+</html>

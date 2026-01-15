@@ -3029,3 +3029,378 @@ a {
         grid-template-columns: 1fr 1fr;
     }
 }
+
+/* ========================================
+   ROLE TABS (Login Page)
+   ======================================== */
+.role-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.role-tab {
+    flex: 1;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.role-tab:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.role-tab.active {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.8), rgba(109, 40, 217, 0.8));
+    border-color: rgba(167, 139, 250, 0.4);
+    color: #fff;
+}
+
+/* Demo Credentials Box */
+.demo-credentials {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.demo-credentials p {
+    margin: 5px 0;
+}
+
+.demo-credentials code {
+    background: rgba(167, 139, 250, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #a78bfa;
+}
+
+/* Logout Button in Nav */
+.nav-links a.nav-logout {
+    padding: 8px 20px;
+    background: rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+}
+
+.nav-links a.nav-logout:hover {
+    background: rgba(239, 68, 68, 0.4);
+    color: #fff;
+}
+
+/* ========================================
+   MEMBER DASHBOARD
+   ======================================== */
+.member-body {
+    min-height: 100vh;
+}
+
+.member-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.member-quick-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+/* ========================================
+   GALLERY SUBMISSION FORM
+   ======================================== */
+.submission-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+@media (max-width: 900px) {
+    .submission-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.submission-form-card,
+.my-submissions-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(var(--glass-blur));
+}
+
+.submission-form-card h3,
+.my-submissions-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 25px;
+    color: #fff;
+}
+
+.gallery-submission-form .form-group {
+    margin-bottom: 20px;
+}
+
+.gallery-submission-form label {
+    display: block;
+    margin-bottom: 8px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+.gallery-submission-form input[type="text"],
+.gallery-submission-form select,
+.gallery-submission-form textarea {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.gallery-submission-form input:focus,
+.gallery-submission-form select:focus,
+.gallery-submission-form textarea:focus {
+    outline: none;
+    border-color: rgba(167, 139, 250, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.gallery-submission-form select {
+    cursor: pointer;
+}
+
+.gallery-submission-form select option {
+    background: #1a1a40;
+}
+
+/* File Upload */
+.file-upload-wrapper {
+    position: relative;
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.file-upload-preview {
+    width: 100%;
+    min-height: 180px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.file-upload-preview:hover,
+.file-upload-preview.dragover {
+    border-color: rgba(167, 139, 250, 0.5);
+    background: rgba(167, 139, 250, 0.05);
+}
+
+.file-upload-preview.has-image {
+    border-style: solid;
+}
+
+.file-upload-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+/* Submissions List */
+.submissions-list {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.submission-item {
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.submission-thumb {
+    width: 80px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.submission-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.submission-info h4 {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.submission-category {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-right: 10px;
+}
+
+.submission-status {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.status-approved {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.status-rejected {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.empty-state {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 14px;
+    text-align: center;
+    padding: 30px;
+}
+
+/* ========================================
+   ADMIN SUBMISSIONS MANAGEMENT
+   ======================================== */
+.pending-badge {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+    display: none;
+}
+
+.pending-count {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+}
+
+.submissions-admin-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.submission-admin-item {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.submission-admin-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(167, 139, 250, 0.3);
+}
+
+.submission-admin-item.approved {
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.submission-preview {
+    width: 120px;
+    height: 90px;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.submission-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.submission-details {
+    flex: 1;
+}
+
+.submission-details h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.submission-meta {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 8px;
+}
+
+.submission-desc {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 15px;
+}
+
+.submission-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.submission-actions .btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+.submission-actions .btn.danger {
+    border-color: rgba(239, 68, 68, 0.5);
+    color: #f87171;
+}
+
+.submission-actions .btn.danger:hover {
+    background: rgba(239, 68, 68, 0.2);
+}
