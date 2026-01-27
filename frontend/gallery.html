@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Astronet</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="star-field">
+        <div class="stars-layer stars-small"></div>
+        <div class="stars-layer stars-medium"></div>
+        <div class="stars-layer stars-large"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">ASTRONET</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="gallery.html" class="active">Gallery</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="learning.html">Learning</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="login.html" class="nav-login">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <section class="page-header">
+        <h1 class="page-title">Our <span class="gradient-text">Gallery</span></h1>
+        <p class="page-subtitle">Photos and videos from our observation nights and astrophotography sessions</p>
+    </section>
+
+    <section class="page-content">
+        <div class="container">
+            <div class="filter-tabs">
+                <button class="filter-tab active" data-filter="all">All</button>
+                <button class="filter-tab" data-filter="astro">Astrophotography</button>
+                <button class="filter-tab" data-filter="events">Events</button>
+                <button class="filter-tab" data-filter="workshops">Workshops</button>
+            </div>
+
+            <div class="gallery-grid" id="galleryGrid">
+                <p style="text-align: center; color: #888; grid-column: 1/-1;">Loading gallery...</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">ASTRONET</a>
+                <p>Exploring the universe together since 2014.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Astronet Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            const galleryGrid = document.getElementById('galleryGrid');
+
+            try {
+                const response = await AstroAPI.gallery.getApproved();
+
+                if (response.success && response.items && response.items.length > 0) {
+                    galleryGrid.innerHTML = '';
+
+                    response.items.forEach(item => {
+                        const imageUrl = item.image_path
+                            ? 'http://localhost:3000' + item.image_path
+                            : item.image_data;
+
+                        const div = document.createElement('div');
+                        div.className = 'gallery-item';
+                        div.setAttribute('data-category', item.category || 'astro');
+                        div.innerHTML = `
+                            <div class="gallery-image" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>
+                            <div class="gallery-info">
+                                <h3>${item.title}</h3>
+                                <p>${(item.description || '').substring(0, 80)}${(item.description || '').length > 80 ? '...' : ''}</p>
+                                <span class="gallery-tag">${item.category || 'Astro'}</span>
+                            </div>
+                        `;
+
+                        // Click event to open modal
+                        div.addEventListener('click', () => {
+                            openGalleryModal({
+                                url: imageUrl,
+                                title: item.title,
+                                description: item.description || 'No description available.',
+                                submitted_by: item.submitted_by_name || 'Anonymous'
+                            });
+                        });
+
+                        galleryGrid.appendChild(div);
+                    });
+
+                    // Initialize filters after items are added to DOM
+                    if (typeof initGalleryFilters === 'function') {
+                        initGalleryFilters();
+                    }
+                } else {
+                    galleryGrid.innerHTML = '<p style="text-align: center; color: #888; grid-column: 1/-1;">No images yet. Be the first to submit!</p>';
+                }
+            } catch (error) {
+                console.error('Gallery error:', error);
+                galleryGrid.innerHTML = '<p style="text-align: center; color: #f66; grid-column: 1/-1;">Failed to load. Is the backend running on port 3000?</p>';
+            }
+        });
+
+        // Modal Functions
+        function openGalleryModal(data) {
+            const modal = document.getElementById('galleryModal');
+            document.getElementById('modalImage').src = data.url;
+            document.getElementById('modalTitle').textContent = data.title;
+            document.getElementById('modalDescription').textContent = data.description;
+            document.getElementById('modalUploader').textContent = data.submitted_by;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeGalleryModal() {
+            const modal = document.getElementById('galleryModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Close on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeGalleryModal();
+        });
+    </script>
+
+    <!-- Gallery Details Modal -->
+    <div id="galleryModal" class="gallery-details-modal">
+        <div class="modal-overlay" onclick="closeGalleryModal()"></div>
+        <div class="modal-container">
+            <button class="modal-close" onclick="closeGalleryModal()">&times;</button>
+            <div class="modal-content">
+                <div class="modal-image-p">
+                    <img id="modalImage" src="" alt="Gallery Image">
+                </div>
+                <div class="modal-info-p">
+                    <h2 id="modalTitle"></h2>
+                    <div class="modal-meta">
+                        <span class="meta-label">Submitted by:</span>
+                        <span id="modalUploader" class="meta-value"></span>
+                    </div>
+                    <div class="modal-description">
+                        <p id="modalDescription"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

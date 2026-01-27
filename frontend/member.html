@@ -166,6 +166,7 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="api.js"></script>
     <script src="auth.js"></script>
     <script>
         // Auth check - require member access
@@ -177,38 +178,72 @@
             document.getElementById('memberName').textContent = user.name || user.username;
 
             // Update stats
-            function updateStats() {
-                const mySubmissions = AstroAuth.getMySubmissions();
-                const approved = mySubmissions.filter(s => s.status === 'approved').length;
-                const pending = mySubmissions.filter(s => s.status === 'pending').length;
+            async function updateStats() {
+                try {
+                    console.log('Fetching my submissions...');
+                    const response = await AstroAPI.gallery.getMySubmissions();
+                    console.log('My submissions response:', response);
+                    const mySubmissions = response.success ? response.items : [];
+                    const approved = mySubmissions.filter(s => s.status === 'approved').length;
+                    const pending = mySubmissions.filter(s => s.status === 'pending').length;
 
-                document.getElementById('submissionsCount').textContent = mySubmissions.length;
-                document.getElementById('approvedCount').textContent = approved;
-                document.getElementById('pendingCount').textContent = pending;
+                    const el1 = document.getElementById('submissionsCount');
+                    const el2 = document.getElementById('approvedCount');
+                    const el3 = document.getElementById('pendingCount');
+                    console.log('Elements found:', el1, el2, el3);
+
+                    // Remove 'counted' class that may prevent updates
+                    if (el1) {
+                        el1.classList.remove('counted');
+                        el1.innerHTML = mySubmissions.length;
+                    }
+                    if (el2) {
+                        el2.classList.remove('counted');
+                        el2.innerHTML = approved;
+                    }
+                    if (el3) {
+                        el3.classList.remove('counted');
+                        el3.innerHTML = pending;
+                    }
+
+                    console.log('Stats updated:', mySubmissions.length, approved, pending);
+                    console.log('Element values after update:', el1?.textContent, el2?.textContent, el3?.textContent);
+                } catch (error) {
+                    console.error('Error updating stats:', error);
+                }
             }
 
             // Load my submissions
-            function loadMySubmissions() {
+            async function loadMySubmissions() {
                 const container = document.getElementById('mySubmissionsList');
-                const submissions = AstroAuth.getMySubmissions();
 
-                if (submissions.length === 0) {
-                    container.innerHTML = '<p class="empty-state">No submissions yet. Share your first photo!</p>';
-                    return;
+                try {
+                    const response = await AstroAPI.gallery.getMySubmissions();
+                    const submissions = response.success ? response.items : [];
+
+                    if (submissions.length === 0) {
+                        container.innerHTML = '<p class="empty-state">No submissions yet. Share your first photo!</p>';
+                        return;
+                    }
+
+                    container.innerHTML = submissions.map(s => {
+                        const imageUrl = s.image_path ? 'http://localhost:3000' + s.image_path : s.image_data;
+                        return `
+                        <div class="submission-item ${s.status}">
+                            <div class="submission-thumb">
+                                <img src="${imageUrl}" alt="${s.title}">
+                            </div>
+                            <div class="submission-info">
+                                <h4>${s.title}</h4>
+                                <span class="submission-category">${s.category}</span>
+                                <span class="submission-status status-${s.status}">${s.status}</span>
+                            </div>
+                        </div>
+                    `}).join('');
+                } catch (error) {
+                    console.error('Error loading submissions:', error);
+                    container.innerHTML = '<p class="empty-state">Error loading submissions</p>';
                 }
-
-                container.innerHTML = submissions.map(s => `
-                    <div class="submission-item ${s.status}">
-                        <div class="submission-thumb">
-                            <img src="${s.imageData}" alt="${s.title}">
-                        </div>
-                        <div class="submission-info">
-                            <h4>${s.title}</h4>
-                            <span class="submission-category">${s.category}</span>
-                            <span class="submission-status status-${s.status}">${s.status}</span>
-                        </div>
-                    </div>
-                `).join('');
             }
 
             // Image preview functionality
@@ -252,7 +287,7 @@
             });
 
             // Form submission
-            document.getElementById('gallerySubmissionForm').addEventListener('submit', function (e) {
+            document.getElementById('gallerySubmissionForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
 
                 const file = imageInput.files[0];
@@ -261,32 +296,39 @@
                     return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const result = AstroAuth.submitGalleryImage(
-                        e.target.result,
-                        document.getElementById('imageTitle').value,
-                        document.getElementById('imageDescription').value,
-                        document.getElementById('imageCategory').value
-                    );
+                const title = document.getElementById('imageTitle').value;
+                const description = document.getElementById('imageDescription').value;
+                const category = document.getElementById('imageCategory').value;
 
-                    if (result.success) {
-                        alert('Image submitted successfully! It will appear in the gallery after admin approval.');
-                        document.getElementById('gallerySubmissionForm').reset();
-                        imagePreview.innerHTML = '<span>Click or drag to upload image</span>';
-                        imagePreview.classList.remove('has-image');
-                        updateStats();
-                        loadMySubmissions();
-                    } else {
-                        alert('Error: ' + result.error);
+                // Convert file to base64
+                const reader = new FileReader();
+                reader.onload = async function (e) {
+                    try {
+                        const result = await AstroAPI.gallery.submit(e.target.result, title, description, category);
+
+                        if (result.success) {
+                            alert('Image submitted successfully! It will appear in the gallery after admin approval.');
+                            document.getElementById('gallerySubmissionForm').reset();
+                            imagePreview.innerHTML = '<span>Click or drag to upload image</span>';
+                            imagePreview.classList.remove('has-image');
+                            updateStats();
+                            loadMySubmissions();
+                        } else {
+                            alert('Error: ' + (result.error || 'Submission failed'));
+                        }
+                    } catch (error) {
+                        console.error('Submit error:', error);
+                        alert('Error: ' + error.message);
                     }
                 };
                 reader.readAsDataURL(file);
             });
 
-            // Initialize
-            updateStats();
-            loadMySubmissions();
+            // Initialize - delay stats update to run after counter animation (1.5+ seconds)
+            setTimeout(() => {
+                updateStats();
+                loadMySubmissions();
+            }, 2000);
         }
     </script>
 </body>

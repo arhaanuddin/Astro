@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Astronet</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Animated Star Background -->
+    <div class="star-field">
+        <div class="stars-layer stars-small"></div>
+        <div class="stars-layer stars-medium"></div>
+        <div class="stars-layer stars-large"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="logo">ASTRONET</a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="events.html" class="active">Events</a></li>
+            <li><a href="learning.html">Learning</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="login.html" class="nav-login">Login</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <h1 class="page-title">Upcoming <span class="gradient-text">Events</span></h1>
+        <p class="page-subtitle">Join us for observation nights, workshops, and celestial phenomena</p>
+    </section>
+
+    <!-- Events Section -->
+    <section class="page-content">
+        <div class="container">
+            <!-- Featured Event Container -->
+            <div id="featuredEventContainer"></div>
+
+            <!-- Events List Container -->
+            <div class="events-list">
+                <h3 class="events-list-title">All Upcoming Events</h3>
+                <div id="eventsContainer">
+                    <p style="text-align: center; color: #888;">Loading events...</p>
+                </div>
+            </div>
+
+            <!-- Calendar Notice -->
+            <div class="calendar-notice">
+                <div class="notice-icon">📅</div>
+                <div class="notice-content">
+                    <h4>Stay Updated</h4>
+                    <p>Subscribe to our newsletter to receive event updates and reminders directly in your inbox.</p>
+                </div>
+                <a href="#" class="btn btn-outline">Subscribe</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">ASTRONET</a>
+                <p>Exploring the universe together since 2014.</p>
+                <div class="footer-social">
+                    <a href="#" class="social-link">FB</a>
+                    <a href="#" class="social-link">IG</a>
+                    <a href="#" class="social-link">TW</a>
+                    <a href="#" class="social-link">YT</a>
+                </div>
+            </div>
+            <div class="footer-links-group">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="learning.html">Learning</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Telescope Guide</a></li>
+                    <li><a href="#">Star Maps</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-links-group">
+                <h4>Contact</h4>
+                <ul>
+                    <li><a href="mailto:hello@astronet.org">hello@astronet.org</a></li>
+                    <li><a href="#">+1 (555) 123-4567</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2024 Astronet Society. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Registration Modal -->
+    <div id="regModal" class="upload-modal">
+        <div class="upload-modal-overlay" onclick="closeRegistrationModal()"></div>
+        <div class="upload-modal-content">
+            <button class="upload-modal-close" onclick="closeRegistrationModal()">&times;</button>
+            <h3>Register for Event</h3>
+            <p id="modalEventTitle" style="color: #a78bfa; margin-bottom: 25px; font-weight: 600;"></p>
+
+            <form id="registrationForm" class="admin-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="regFullName" required class="admin-input" placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="regEmail" required class="admin-input" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="regPhone" class="admin-input" placeholder="Your contact number">
+                </div>
+                <div class="form-group">
+                    <label>Additional Guests</label>
+                    <input type="number" id="regGuests" min="0" max="5" value="0" class="admin-input">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top: 20px;">
+                    Confirm Registration
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Protect this page - members only
+        if (!AstroAuth.requireMember()) {
+            // Redirect is handled by requireMember
+        } else {
+            const user = AstroAuth.getCurrentUser();
+            let selectedEventId = null;
+
+            document.addEventListener('DOMContentLoaded', loadEvents);
+
+            async function loadEvents() {
+                const eventsContainer = document.getElementById('eventsContainer');
+                const featuredContainer = document.getElementById('featuredEventContainer');
+
+                try {
+                    const response = await AstroAPI.events.getAll();
+                    if (response.success && response.events.length > 0) {
+                        eventsContainer.innerHTML = '';
+                        featuredContainer.innerHTML = '';
+
+                        // Find featured event (first one marked as such or just the first)
+                        const featured = response.events.find(e => e.is_featured) || response.events[0];
+                        const others = response.events.filter(e => e.id !== featured.id);
+
+                        // Render featured
+                        if (featuredContainer) featuredContainer.innerHTML = renderFeaturedEvent(featured);
+
+                        // Render others
+                        if (eventsContainer) {
+                            if (others.length > 0) {
+                                others.forEach(event => {
+                                    eventsContainer.innerHTML += renderEventCard(event);
+                                });
+                            } else {
+                                eventsContainer.innerHTML = '<p style="text-align: center; color: #888;">No other upcoming events.</p>';
+                            }
+                        }
+                    } else {
+                        if (eventsContainer) eventsContainer.innerHTML = '<p style="text-align: center; color: #888;">No upcoming events found.</p>';
+                    }
+                } catch (error) {
+                    console.error('Error loading events:', error);
+                    if (eventsContainer) eventsContainer.innerHTML = '<p style="text-align: center; color: #f66;">Failed to load events. Is the backend running?</p>';
+                }
+            }
+
+            function renderFeaturedEvent(event) {
+                const date = new Date(event.event_date);
+                const day = date.getDate();
+                const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+                const year = date.getFullYear();
+
+                return `
+                        <div class="featured-event">
+                            <div class="featured-event-badge">Featured Event</div>
+                            <div class="featured-event-content">
+                                <div class="featured-event-date">
+                                    <span class="day">${day}</span>
+                                    <span class="month">${month}</span>
+                                    <span class="year">${year}</span>
+                                </div>
+                                <div class="featured-event-info">
+                                    <h2>${event.title}</h2>
+                                    <p>${event.description}</p>
+                                    <div class="featured-event-details">
+                                        <span>🕐 ${formatTime(event.start_time)} - ${formatTime(event.end_time)}</span>
+                                        <span>📍 ${event.location}</span>
+                                        <span>👥 ${event.registration_count}/${event.capacity} spots filled</span>
+                                        <span>🔭 ${event.event_type}</span>
+                                    </div>
+                                    <button onclick="openRegistrationModal(${event.id}, '${event.title.replace(/'/g, "\\'")}')" class="btn btn-primary">Register Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            }
+
+            function renderEventCard(event) {
+                const date = new Date(event.event_date);
+                const day = date.getDate();
+                const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+
+                return `
+                        <div class="event-card">
+                            <div class="event-date">
+                                <span class="day">${day}</span>
+                                <span class="month">${month}</span>
+                            </div>
+                            <div class="event-details">
+                                <div class="event-header">
+                                    <h3>${event.title}</h3>
+                                    <span class="event-type ${event.event_type}">${event.event_type}</span>
+                                </div>
+                                <p>${event.description}</p>
+                                <div class="event-meta">
+                                    <span>🕐 ${formatTime(event.start_time)} - ${formatTime(event.end_time)}</span>
+                                    <span>📍 ${event.location}</span>
+                                    <span>👥 ${event.capacity - event.registration_count} spots available</span>
+                                </div>
+                            </div>
+                            <button onclick="openRegistrationModal(${event.id}, '${event.title.replace(/'/g, "\\'")}')" class="event-register-btn">Register</button>
+                        </div>
+                    `;
+            }
+
+            function formatTime(timeStr) {
+                if (!timeStr) return '';
+                const [hours, minutes] = timeStr.split(':');
+                const h = parseInt(hours);
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                const h12 = h % 12 || 12;
+                return `${h12}:${minutes} ${ampm}`;
+            }
+
+            // Modal logic
+            window.openRegistrationModal = function (eventId, eventTitle) {
+                selectedEventId = eventId;
+                const modalTitle = document.getElementById('modalEventTitle');
+                if (modalTitle) modalTitle.textContent = eventTitle;
+
+                const modal = document.getElementById('regModal');
+                if (modal) modal.classList.add('active');
+
+                // Pre-fill with user info
+                if (user) {
+                    const nameInput = document.getElementById('regFullName');
+                    const emailInput = document.getElementById('regEmail');
+                    if (nameInput) nameInput.value = user.name || '';
+                    if (emailInput) emailInput.value = user.email || '';
+                }
+
+                document.body.style.overflow = 'hidden';
+            }
+
+            window.closeRegistrationModal = function () {
+                const modal = document.getElementById('regModal');
+                const form = document.getElementById('registrationForm');
+                if (modal) modal.classList.remove('active');
+                document.body.style.overflow = '';
+                if (form) form.reset();
+            }
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const regForm = document.getElementById('registrationForm');
+                if (regForm) {
+                    regForm.addEventListener('submit', async function (e) {
+                        e.preventDefault();
+
+                        const data = {
+                            full_name: document.getElementById('regFullName').value,
+                            email: document.getElementById('regEmail').value,
+                            phone: document.getElementById('regPhone').value,
+                            guest_count: parseInt(document.getElementById('regGuests').value) || 0
+                        };
+
+                        try {
+                            const response = await AstroAPI.events.register(selectedEventId, data);
+                            if (response.success) {
+                                alert('Successfully registered for the event!');
+                                closeRegistrationModal();
+                                loadEvents(); // Reload to update counts
+                            } else {
+                                alert('Error: ' + (response.error || 'Registration failed'));
+                            }
+                        } catch (error) {
+                            console.error('Registration error:', error);
+                            alert('An error occurred during registration.');
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

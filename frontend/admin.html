@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Astronet</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body class="admin-body">
+    <!-- Animated Star Background -->
+    <div class="star-field">
+        <div class="stars-layer stars-small"></div>
+        <div class="stars-layer stars-medium"></div>
+        <div class="stars-layer stars-large"></div>
+    </div>
+
+    <!-- Admin Layout -->
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <a href="index.html" class="logo">ASTRONET</a>
+                <span class="admin-badge">Admin</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-section="dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#events" class="nav-item" data-section="events">
+                    <span class="nav-icon">🔭</span>
+                    <span>Events</span>
+                </a>
+                <a href="#gallery" class="nav-item" data-section="gallery">
+                    <span class="nav-icon">📸</span>
+                    <span>Gallery</span>
+                </a>
+                <a href="#submissions" class="nav-item" data-section="submissions">
+                    <span class="nav-icon">📥</span>
+                    <span>Submissions</span>
+                    <span class="pending-badge" id="pendingBadge"></span>
+                </a>
+                <a href="#users" class="nav-item" data-section="users">
+                    <span class="nav-icon">👥</span>
+                    <span>Users</span>
+                </a>
+                <a href="#settings" class="nav-item" data-section="settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="admin-user">
+                    <div class="user-avatar">👨‍💼</div>
+                    <div class="user-info">
+                        <span class="user-name" id="adminName">Admin</span>
+                        <span class="user-role">Administrator</span>
+                    </div>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <span>Logout</span>
+                    <span>🚪</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button id="sidebarToggle" class="sidebar-toggle">☰</button>
+                    <h1 class="page-title-admin" id="sectionTitle">Dashboard</h1>
+                </div>
+                <div class="topbar-right">
+                    <span class="current-time" id="currentTime"></span>
+                    <a href="index.html" class="btn btn-outline btn-sm">View Site →</a>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="admin-section active">
+                <div class="dashboard-grid">
+                    <!-- Stats Cards -->
+                    <div class="admin-stat-card stat-members">
+                        <div class="stat-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value" id="statTotalMembers">--</span>
+                            <span class="stat-label">Total Members</span>
+                        </div>
+                    </div>
+
+                    <div class="admin-stat-card stat-upcoming">
+                        <div class="stat-icon">🔭</div>
+                        <div class="stat-content">
+                            <span class="stat-value" id="statUpcomingEvents">--</span>
+                            <span class="stat-label">Upcoming Events</span>
+                        </div>
+                    </div>
+
+                    <div class="admin-stat-card stat-completed">
+                        <div class="stat-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V9h14v10zm-8.66-1.74l-3.35-3.35 1.42-1.42 1.93 1.94 4.88-4.88 1.42 1.42-6.3 6.29z" />
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-value" id="statCompletedEvents">--</span>
+                            <span class="stat-label">Completed Events</span>
+                        </div>
+                    </div>
+
+                    <div class="admin-stat-card stat-gallery-dual">
+                        <div class="stat-icon-main">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
+                                fill="currentColor" stroke="black" stroke-width="1.2" stroke-linejoin="round">
+                                <path
+                                    d="M20 5h-3.17L15 3H9L7.17 5H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-8 13c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.65 0-3 1.35-3 3s1.35 3 3 3 3-1.35 3-3-1.35-3-3-3z" />
+                            </svg>
+                        </div>
+                        <div class="gallery-metrics">
+                            <div class="metric-box">
+                                <span class="metric-value" id="statMemberUploads">--</span>
+                                <span class="metric-label">Member Uploads</span>
+                            </div>
+                            <div class="metric-divider"></div>
+                            <div class="metric-box">
+                                <span class="metric-value" id="statAdminUploads">--</span>
+                                <span class="metric-label">Admin Uploads</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="admin-card">
+                    <h3 class="card-title">Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn" onclick="showSection('events')">
+                            <span class="action-icon">📅</span>
+                            <span>Add Event</span>
+                        </button>
+                        <button class="action-btn" onclick="showSection('gallery')">
+                            <span class="action-icon">🖼️</span>
+                            <span>Upload Photo</span>
+                        </button>
+                        <button class="action-btn" onclick="showSection('users')">
+                            <div class="action-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <path
+                                        d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                                </svg>
+                            </div>
+                            <span>Manage Member</span>
+                        </button>
+                        <button class="action-btn">
+                            <span class="action-icon">📧</span>
+                            <span>Send Email</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="admin-card">
+                    <h3 class="card-title">Recent Activity</h3>
+                    <div class="activity-list" id="recentActivityList">
+                        <div class="activity-item">
+                            <span class="activity-icon">🎉</span>
+                            <div class="activity-content">
+                                <p>New member <strong>Arhaan</strong> registered</p>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-icon">📸</span>
+                            <div class="activity-content">
+                                <p>3 new photos uploaded to <strong>Andromeda Gallery</strong></p>
+                                <span class="activity-time">5 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-icon">🔭</span>
+                            <div class="activity-content">
+                                <p>Event <strong>Lunar Eclipse Observation</strong> created</p>
+                                <span class="activity-time">1 day ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <span class="activity-icon">✅</span>
+                            <div class="activity-content">
+                                <p><strong>15 registrations</strong> for Stargazing Night</p>
+                                <span class="activity-time">2 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Events Section -->
+            <section id="events" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>Manage Events</h2>
+                    <button class="btn btn-primary">+ Add New Event</button>
+                </div>
+
+                <div class="admin-card">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Event Name</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Registrations</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminEventsTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-state">Loading events...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Gallery Section -->
+            <section id="gallery" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>Manage Gallery</h2>
+                    <button class="btn btn-primary" onclick="openUploadModal()">+ Add New Image</button>
+                </div>
+
+                <div class="admin-card">
+                    <h3 class="card-title">Approved Gallery Items</h3>
+                    <div class="gallery-admin-grid" id="adminGalleryGrid">
+                        <p class="empty-state">Loading gallery...</p>
+                    </div>
+                </div>
+            </section>
+
+
+
+            <!-- Submissions Section -->
+            <section id="submissions" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>Member Submissions</h2>
+                    <span class="pending-count" id="pendingCountHeader">0 pending</span>
+                </div>
+
+                <div class="admin-card">
+                    <h3 class="card-title">Pending Approval</h3>
+                    <div id="pendingSubmissionsList" class="submissions-admin-grid">
+                        <p class="empty-state">No pending submissions</p>
+                    </div>
+                </div>
+
+                <div class="admin-card" style="margin-top: 20px;">
+                    <h3 class="card-title">Approved Submissions</h3>
+                    <div id="approvedSubmissionsList" class="submissions-admin-grid">
+                        <p class="empty-state">No approved submissions yet</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="users" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>User Management</h2>
+                </div>
+
+                <div class="admin-card">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-state">Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="admin-section">
+                <div class="section-header-admin">
+                    <h2>Settings</h2>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="admin-card">
+                        <h3 class="card-title">Site Settings</h3>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>Site Name</label>
+                                <input type="text" value="ASTRONET" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Contact Email</label>
+                                <input type="email" value="hello@astronet.org" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Max Event Registrations</label>
+                                <input type="number" value="100" class="admin-input">
+                            </div>
+                            <button class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </div>
+
+                    <div class="admin-card">
+                        <h3 class="card-title">Account Settings</h3>
+                        <div class="settings-form">
+                            <div class="form-group">
+                                <label>Admin Username</label>
+                                <input type="text" value="admin" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" placeholder="Enter new password" class="admin-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" placeholder="Confirm new password" class="admin-input">
+                            </div>
+                            <button class="btn btn-primary">Update Password</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Upload Image Modal -->
+    <div id="uploadModal" class="upload-modal">
+        <div class="upload-modal-overlay" onclick="closeUploadModal()"></div>
+        <div class="upload-modal-content">
+            <button class="upload-modal-close" onclick="closeUploadModal()">&times;</button>
+            <h3>📸 Upload New Image</h3>
+            <form id="adminUploadForm" class="gallery-submission-form">
+                <div class="form-group">
+                    <label for="adminImageFile">Select Image</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="adminImageFile" accept="image/*" required>
+                        <div class="file-upload-preview" id="adminImagePreview">
+                            <span>Click or drag to upload image</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="adminImageTitle">Title</label>
+                    <input type="text" id="adminImageTitle" placeholder="e.g., Orion Nebula" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminImageCategory">Category</label>
+                    <select id="adminImageCategory" required>
+                        <option value="">Select category</option>
+                        <option value="astro">Astrophotography</option>
+                        <option value="events">Events</option>
+                        <option value="workshops">Workshops</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="adminImageDescription">Description</label>
+                    <textarea id="adminImageDescription" rows="3" placeholder="Tell us about this photo..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span>Upload to Gallery</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Global functions
+        window.loadDashboardStats = async function () {
+            try {
+                const response = await AstroAPI.stats.getDashboardStats();
+                if (response.success) {
+                    const stats = response.stats;
+                    if (document.getElementById('statTotalMembers')) document.getElementById('statTotalMembers').textContent = stats.totalMembers;
+                    if (document.getElementById('statUpcomingEvents')) document.getElementById('statUpcomingEvents').textContent = stats.upcomingEvents;
+                    if (document.getElementById('statCompletedEvents')) document.getElementById('statCompletedEvents').textContent = stats.completedEvents;
+                    if (document.getElementById('statMemberUploads')) document.getElementById('statMemberUploads').textContent = stats.memberUploads;
+                    if (document.getElementById('statAdminUploads')) document.getElementById('statAdminUploads').textContent = stats.adminUploads;
+
+                    // Render activities
+                    const activityList = document.getElementById('recentActivityList');
+                    if (activityList && response.activities) {
+                        if (response.activities.length === 0) {
+                            activityList.innerHTML = '<p class="empty-state">No recent activity</p>';
+                        } else {
+                            activityList.innerHTML = response.activities.map(act => {
+                                let icon = '🎉';
+                                if (act.type === 'user') icon = '👤';
+                                else if (act.type === 'gallery') icon = '📸';
+                                else if (act.type === 'event') icon = '🔭';
+                                else if (act.type === 'system') icon = '⚙️';
+
+                                // Split action and detail for better UI
+                                let displayHtml = act.detail;
+                                if (act.detail.includes(':')) {
+                                    const parts = act.detail.split(':');
+                                    displayHtml = `<strong>${parts[0]}:</strong>${parts.slice(1).join(':')}`;
+                                }
+
+                                return `
+                                    <div class="activity-item">
+                                        <span class="activity-icon">${icon}</span>
+                                        <div class="activity-content">
+                                            <p>${displayHtml}</p>
+                                            <span class="activity-time">${timeAgo(act.timestamp)}</span>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('');
+                        }
+                    }
+                }
+            } catch (err) { console.error(err); }
+        };
+
+        function timeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            if (seconds < 60) return 'Just now';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return `${hours}h ago`;
+            const days = Math.floor(hours / 24);
+            return `${days}d ago`;
+        }
+
+        window.loadSubmissions = async function () {
+            const pendingList = document.getElementById('pendingSubmissionsList');
+            const approvedList = document.getElementById('approvedSubmissionsList');
+            if (!pendingList || !approvedList) return;
+
+            try {
+                const pendingResponse = await AstroAPI.gallery.getPending();
+                const approvedResponse = await AstroAPI.gallery.getApproved();
+
+                const pendingSubmissions = pendingResponse.success ? pendingResponse.items : [];
+                const approvedSubmissions = approvedResponse.success ? approvedResponse.items : [];
+
+                // Update pending badge
+                const pendingBadge = document.getElementById('pendingBadge');
+                const pendingCountHeader = document.getElementById('pendingCountHeader');
+                if (pendingSubmissions.length > 0) {
+                    if (pendingBadge) {
+                        pendingBadge.textContent = pendingSubmissions.length;
+                        pendingBadge.style.display = 'inline-block';
+                    }
+                    if (pendingCountHeader) pendingCountHeader.textContent = `${pendingSubmissions.length} pending`;
+                } else {
+                    if (pendingBadge) pendingBadge.style.display = 'none';
+                    if (pendingCountHeader) pendingCountHeader.textContent = '0 pending';
+                }
+
+                // Render pending submissions
+                if (pendingSubmissions.length === 0) {
+                    pendingList.innerHTML = '<p class="empty-state">No pending submissions</p>';
+                } else {
+                    pendingList.innerHTML = pendingSubmissions.map(s => {
+                        const imageUrl = s.image_path ? 'http://localhost:3000' + s.image_path : s.image_data;
+                        return `
+                        <div class="submission-admin-item">
+                            <div class="submission-preview">
+                                <img src="${imageUrl}" alt="${s.title}">
+                            </div>
+                            <div class="submission-details">
+                                <h4>${s.title}</h4>
+                                <p class="submission-meta">By: ${s.submitted_by_name || 'Unknown'} | ${s.category}</p>
+                                <p class="submission-desc">${s.description || 'No description'}</p>
+                                <div class="submission-actions">
+                                    <button class="btn btn-primary btn-sm" onclick="approveSubmission(${s.id})">✓ Approve</button>
+                                    <button class="btn btn-outline btn-sm danger" onclick="rejectSubmission(${s.id})">✕ Reject</button>
+                                </div>
+                            </div>
+                        </div>
+                    `}).join('');
+                }
+
+                // Render approved submissions
+                if (approvedSubmissions.length === 0) {
+                    approvedList.innerHTML = '<p class="empty-state">No approved submissions yet</p>';
+                } else {
+                    approvedList.innerHTML = approvedSubmissions.map(s => {
+                        const imageUrl = s.image_path ? 'http://localhost:3000' + s.image_path : s.image_data;
+                        return `
+                        <div class="submission-admin-item approved">
+                            <div class="submission-preview">
+                                <img src="${imageUrl}" alt="${s.title}">
+                            </div>
+                            <div class="submission-details">
+                                <h4>${s.title}</h4>
+                                <p class="submission-meta">By: ${s.submitted_by_name || 'Unknown'} | ${s.category}</p>
+                                <span class="status-badge active">Approved</span>
+                            </div>
+                        </div>
+                    `}).join('');
+                }
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                if (pendingList) pendingList.innerHTML = '<p class="empty-state">Error loading submissions</p>';
+            }
+        }
+
+        window.loadAdminGallery = async function () {
+            const grid = document.getElementById('adminGalleryGrid');
+            if (!grid) return;
+
+            try {
+                const response = await AstroAPI.gallery.getApproved();
+                const items = response.success ? response.items : [];
+
+                if (items.length === 0) {
+                    grid.innerHTML = '<p class="empty-state">No approved gallery items yet. Approve some submissions!</p>';
+                    return;
+                }
+
+                grid.innerHTML = items.map(item => {
+                    const imageUrl = item.image_path ? 'http://localhost:3000' + item.image_path : item.image_data;
+                    return `
+                    <div class="gallery-admin-item">
+                        <div class="gallery-thumb" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>
+                        <div class="gallery-info">
+                            <span class="gallery-name">${item.title}</span>
+                            <span class="gallery-category">${item.category || 'Astro'}</span>
+                            <span class="gallery-uploader">Uploaded by: ${item.submitted_by_name || 'Unknown'}</span>
+                        </div>
+                        <div class="gallery-actions">
+                            <button class="action-btn-sm danger" onclick="deleteGalleryItem(${item.id})">🗑️</button>
+                        </div>
+                    </div>
+                `}).join('');
+            } catch (error) {
+                console.error('Error loading gallery:', error);
+                grid.innerHTML = '<p class="empty-state">Error loading gallery</p>';
+            }
+        }
+
+        window.approveSubmission = async function (id) {
+            const result = await AstroAPI.gallery.approve(id);
+            if (result.success) {
+                loadSubmissions();
+                loadAdminGallery();
+                alert('Submission approved! It will now appear in the public gallery.');
+            } else {
+                alert('Error: ' + (result.error || 'Could not approve'));
+            }
+        }
+
+        window.rejectSubmission = async function (id) {
+            if (confirm('Are you sure you want to reject this submission?')) {
+                const result = await AstroAPI.gallery.reject(id);
+                if (result.success) {
+                    loadSubmissions();
+                }
+            }
+        }
+
+        window.deleteGalleryItem = async function (id) {
+            if (confirm('Are you sure you want to delete this gallery item?')) {
+                const result = await AstroAPI.gallery.delete(id);
+                if (result.success) {
+                    loadAdminGallery();
+                    alert('Gallery item deleted.');
+                } else {
+                    alert('Error: ' + (result.error || 'Could not delete'));
+                }
+            }
+        }
+
+        window.openUploadModal = function () {
+            const modal = document.getElementById('uploadModal');
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        window.closeUploadModal = function () {
+            const modal = document.getElementById('uploadModal');
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                const form = document.getElementById('adminUploadForm');
+                if (form) form.reset();
+                const preview = document.getElementById('adminImagePreview');
+                if (preview) {
+                    preview.innerHTML = '<span>Click or drag to upload image</span>';
+                    preview.classList.remove('has-image');
+                }
+            }
+        }
+
+        // Auth check - require admin access
+        if (!AstroAuth.requireAdmin()) {
+            // Redirect is handled by requireAdmin
+        } else {
+            // Display admin name
+            const user = AstroAuth.getCurrentUser();
+            if (user) {
+                const adminNameEl = document.getElementById('adminName');
+                if (adminNameEl) adminNameEl.textContent = user.name || user.username;
+            }
+
+            // Update current time
+            function updateTime() {
+                const timeEl = document.getElementById('currentTime');
+                if (!timeEl) return;
+                const now = new Date();
+                timeEl.textContent = now.toLocaleString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+            updateTime();
+            setInterval(updateTime, 60000);
+
+            // Forward declarations for sections that might be called immediately
+            window.loadAdminEvents = loadAdminEvents;
+            window.viewRegistrations = viewRegistrations;
+            window.closeRegistrationsModal = closeRegistrationsModal;
+            window.openEventModal = openEventModal;
+            window.closeEventModal = closeEventModal;
+            window.deleteEvent = deleteEvent;
+            window.deleteGalleryItem = deleteGalleryItem;
+            window.loadAdminUsers = loadAdminUsers;
+            window.openUserModal = openUserModal;
+            window.closeUserModal = closeUserModal;
+            window.deleteUser = deleteUser;
+
+            // Section navigation
+            window.showSection = function (sectionId) {
+                document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+                const section = document.getElementById(sectionId);
+                const navItem = document.querySelector(`[data-section="${sectionId}"]`);
+                if (section) section.classList.add('active');
+                if (navItem) navItem.classList.add('active');
+
+                const titles = {
+                    dashboard: 'Dashboard',
+                    events: 'Events Management',
+                    gallery: 'Gallery Management',
+                    submissions: 'Member Submissions',
+                    users: 'User Management',
+                    settings: 'Settings'
+                };
+                const titleEl = document.getElementById('sectionTitle');
+                if (titleEl) titleEl.textContent = titles[sectionId] || 'Dashboard';
+
+                // Reload data when section is shown
+                if (sectionId === 'submissions') loadSubmissions();
+                if (sectionId === 'events') loadAdminEvents();
+                if (sectionId === 'gallery') loadAdminGallery();
+                if (sectionId === 'users') loadAdminUsers();
+                if (sectionId === 'dashboard') loadDashboardStats();
+            }
+
+            // Sidebar navigation clicks
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    showSection(this.dataset.section);
+                });
+            });
+
+            // Sidebar toggle for mobile
+            document.getElementById('sidebarToggle')?.addEventListener('click', function () {
+                document.querySelector('.admin-sidebar')?.classList.toggle('open');
+            });
+
+            // Logout
+            document.getElementById('logoutBtn')?.addEventListener('click', function () {
+                AstroAuth.logout();
+            });
+
+            // Initial load
+            loadDashboardStats();
+            loadSubmissions();
+            loadAdminGallery();
+            loadAdminEvents();
+        }
+
+        async function loadAdminEvents() {
+            const tbody = document.getElementById('adminEventsTableBody');
+            if (!tbody) return;
+
+            try {
+                const response = await AstroAPI.events.getAll();
+                if (response.success) {
+                    if (response.events.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No events found</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = response.events.map(event => {
+                        const date = new Date(event.event_date).toLocaleDateString();
+                        return `
+                        <tr>
+                            <td>${event.title}</td>
+                            <td>${date}</td>
+                            <td>${event.location}</td>
+                            <td>
+                                <button class="btn btn-outline btn-sm" onclick="viewRegistrations(${event.id}, '${event.title.replace(/'/g, "\\'")}')">
+                                    ${event.registration_count} view
+                                </button>
+                            </td>
+                            <td><span class="status-badge ${event.status}">${event.status}</span></td>
+                            <td class="actions">
+                                <button class="action-btn-sm" onclick="openEventModal(${event.id})">✏️</button>
+                                <button class="action-btn-sm danger" onclick="deleteEvent(${event.id}, '${event.title.replace(/'/g, "\\'")}')">🗑️</button>
+                            </td>
+                        </tr>
+                        `;
+                    }).join('');
+                }
+            } catch (error) {
+                console.error('Error loading admin events:', error);
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Error loading events</td></tr>';
+            }
+        }
+
+        async function viewRegistrations(eventId, eventTitle) {
+            const modal = document.getElementById('registrationsModal');
+            const list = document.getElementById('registrationsList');
+            document.getElementById('regModalEventTitle').textContent = eventTitle;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            list.innerHTML = '<tr><td colspan="4" class="empty-state">Loading registrations...</td></tr>';
+
+            try {
+                const response = await AstroAPI.events.getRegistrations(eventId);
+                if (response.success) {
+                    if (response.registrations.length === 0) {
+                        list.innerHTML = '<tr><td colspan="4" class="empty-state">No registrations yet</td></tr>';
+                        return;
+                    }
+
+                    list.innerHTML = response.registrations.map(r => `
+                        <tr>
+                            <td>${r.full_name}</td>
+                            <td>${r.email}</td>
+                            <td>${r.phone || '-'}</td>
+                            <td>${r.guest_count}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading registrations:', error);
+                list.innerHTML = '<tr><td colspan="4" class="empty-state">Error loading registrations</td></tr>';
+            }
+        }
+
+        function closeRegistrationsModal() {
+            document.getElementById('registrationsModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // Event Modal Logic
+        let currentEditingEventId = null;
+
+        async function openEventModal(eventId = null) {
+            const modal = document.getElementById('eventModal');
+            const form = document.getElementById('eventForm');
+            const titleEl = document.getElementById('eventModalTitle');
+
+            currentEditingEventId = eventId;
+            form.reset();
+
+            if (eventId) {
+                titleEl.textContent = 'Edit Event';
+                try {
+                    const response = await AstroAPI.events.getById(eventId);
+                    if (response.success) {
+                        const event = response.event;
+                        document.getElementById('editEventTitle').value = event.title;
+                        document.getElementById('editEventDate').value = event.event_date.split('T')[0];
+                        document.getElementById('editStartTime').value = event.start_time;
+                        document.getElementById('editEndTime').value = event.end_time;
+                        document.getElementById('editLocation').value = event.location;
+                        document.getElementById('editEventType').value = event.event_type;
+                        document.getElementById('editCapacity').value = event.capacity;
+                        document.getElementById('editDescription').value = event.description;
+                        document.getElementById('editIsFeatured').checked = event.is_featured;
+                        document.getElementById('editStatus').value = event.status;
+                    }
+                } catch (error) {
+                    alert('Error loading event data');
+                }
+            } else {
+                titleEl.textContent = 'Add New Event';
+                document.getElementById('editStatus').value = 'upcoming';
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeEventModal() {
+            document.getElementById('eventModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // User Management Logic
+        async function loadAdminUsers() {
+            const tbody = document.getElementById('adminUsersTableBody');
+            if (!tbody) return;
+
+            try {
+                const response = await AstroAPI.users.getAll();
+                if (response.success) {
+                    tbody.innerHTML = response.users.map(user => `
+                        <tr>
+                            <td>${user.name}</td>
+                            <td>${user.username}</td>
+                            <td>${user.email}</td>
+                            <td><span class="status-badge ${user.role}">${user.role}</span></td>
+                            <td><span class="status-badge ${user.status || 'active'}">${user.status || 'active'}</span></td>
+                            <td class="actions">
+                                <button class="action-btn-sm" onclick="openUserModal(${user.id})">✏️</button>
+                                <button class="action-btn-sm danger" onclick="deleteUser(${user.id}, '${user.name.replace(/'/g, "\\'")}')">🗑️</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading users:', error);
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Error loading users</td></tr>';
+            }
+        }
+
+        let currentEditingUserId = null;
+
+        async function openUserModal(userId) {
+            if (!userId) return;
+
+            const modal = document.getElementById('userModal');
+            const form = document.getElementById('userForm');
+            const titleEl = document.getElementById('userModalTitle');
+
+            currentEditingUserId = userId;
+            form.reset();
+
+            titleEl.textContent = 'Edit User Role & Status';
+
+            try {
+                const response = await AstroAPI.users.getById(userId);
+                if (response.success) {
+                    const user = response.user;
+                    document.getElementById('editUserName').value = user.name;
+                    document.getElementById('editUserUsername').value = user.username;
+                    document.getElementById('editUserEmail').value = user.email;
+                    document.getElementById('editUserRole').value = user.role;
+                    document.getElementById('editUserStatus').value = user.status || 'active';
+                }
+            } catch (error) {
+                alert('Error loading user data');
+            }
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeUserModal() {
+            document.getElementById('userModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function deleteUser(id, name) {
+            const currentUser = AstroAuth.getCurrentUser();
+            if (currentUser && currentUser.id === id) {
+                alert('You cannot delete your own account while logged in.');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to delete user "${name}"? This will remove all their data.`)) {
+                try {
+                    const response = await AstroAPI.users.delete(id);
+                    if (response.success) {
+                        alert('User deleted.');
+                        loadAdminUsers();
+                    }
+                } catch (error) {
+                    alert('Error deleting user: ' + error.message);
+                }
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            const eventForm = document.getElementById('eventForm');
+            if (eventForm) {
+                eventForm.addEventListener('submit', async function (e) {
+                    // ... existing event form logic ...
+                });
+            }
+
+            const userForm = document.getElementById('userForm');
+            if (userForm) {
+                userForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    // Admin ONLY changes role and status
+                    const data = {
+                        role: document.getElementById('editUserRole').value,
+                        status: document.getElementById('editUserStatus').value
+                    };
+
+                    try {
+                        const response = await AstroAPI.users.update(currentEditingUserId, data);
+
+                        if (response.success) {
+                            alert('User role/status updated!');
+                            closeUserModal();
+                            loadAdminUsers();
+                        }
+                    } catch (error) {
+                        alert('Error saving user: ' + error.message);
+                    }
+                });
+            }
+
+            const adminUploadForm = document.getElementById('adminUploadForm');
+            // ... rest of DOMContentLoaded ...
+            if (adminUploadForm) {
+                adminUploadForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+
+                    const file = adminImageInput?.files[0];
+                    if (!file) {
+                        alert('Please select an image');
+                        return;
+                    }
+
+                    const title = document.getElementById('adminImageTitle').value;
+                    const description = document.getElementById('adminImageDescription').value;
+                    const category = document.getElementById('adminImageCategory').value;
+
+                    const reader = new FileReader();
+                    reader.onload = async function (e) {
+                        try {
+                            const result = await AstroAPI.gallery.submit(e.target.result, title, description, category);
+
+                            if (result.success) {
+                                await AstroAPI.gallery.approve(result.submission.id);
+                                alert('Image uploaded and added to gallery!');
+                                closeUploadModal();
+                                loadAdminGallery();
+                            } else {
+                                alert('Error: ' + (result.error || 'Upload failed'));
+                            }
+                        } catch (error) {
+                            console.error('Upload error:', error);
+                            alert('Error: ' + error.message);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        async function deleteEvent(id, title) {
+            if (confirm(`Are you sure you want to delete the event "${title}"? This action cannot be undone.`)) {
+                try {
+                    const response = await AstroAPI.events.delete(id);
+                    if (response.success) {
+                        alert('Event deleted.');
+                        loadAdminEvents();
+                    }
+                } catch (error) {
+                    alert('Error deleting event.');
+                }
+            }
+        }
+
+        // Override existing deleteGalleryItem for confirmation
+        const originalDeleteGalleryItem = window.deleteGalleryItem;
+        window.deleteGalleryItem = async function (id) {
+            if (confirm('Are you sure you want to delete this gallery item forever?')) {
+                const result = await AstroAPI.gallery.delete(id);
+                if (result.success) {
+                    loadAdminGallery();
+                    alert('Gallery item deleted.');
+                }
+            }
+        }
+
+        // Image preview for admin upload
+        const adminImageInput = document.getElementById('adminImageFile');
+        const adminImagePreview = document.getElementById('adminImagePreview');
+
+        if (adminImageInput && adminImagePreview) {
+            adminImageInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        adminImagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                        adminImagePreview.classList.add('has-image');
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            adminImagePreview.addEventListener('click', () => adminImageInput.click());
+        }
+
+
+
+        // Close on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closeUploadModal();
+                closeRegistrationsModal();
+                closeEventModal();
+                closeUserModal();
+            }
+        });
+    </script>
+
+    <!-- Registrations Modal -->
+    <div id="registrationsModal" class="upload-modal">
+        <div class="upload-modal-overlay" onclick="closeRegistrationsModal()"></div>
+        <div class="upload-modal-content" style="max-width: 800px;">
+            <button class="upload-modal-close" onclick="closeRegistrationsModal()">&times;</button>
+            <h3>Event Registrations</h3>
+            <p id="regModalEventTitle" style="color: #a78bfa; margin-bottom: 20px; font-weight: 600;"></p>
+
+            <div style="max-height: 400px; overflow-y: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Participant</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Guests</th>
+                        </tr>
+                    </thead>
+                    <tbody id="registrationsList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Management Modal -->
+    <div id="eventModal" class="upload-modal">
+        <div class="upload-modal-overlay" onclick="closeEventModal()"></div>
+        <div class="upload-modal-content" style="max-width: 600px;">
+            <button class="upload-modal-close" onclick="closeEventModal()">&times;</button>
+            <h3 id="eventModalTitle">Manage Event</h3>
+
+            <form id="eventForm" class="admin-form">
+                <div class="form-group">
+                    <label>Event Title</label>
+                    <input type="text" id="editEventTitle" required class="admin-input">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="editEventDate" required class="admin-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Event Type</label>
+                        <select id="editEventType" class="admin-input">
+                            <option value="observation">Observation</option>
+                            <option value="workshop">Workshop</option>
+                            <option value="special">Special</option>
+                            <option value="celestial">Celestial</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Start Time</label>
+                        <input type="time" id="editStartTime" class="admin-input">
+                    </div>
+                    <div class="form-group">
+                        <label>End Time</label>
+                        <input type="time" id="editEndTime" class="admin-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" id="editLocation" class="admin-input">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Capacity</label>
+                        <input type="number" id="editCapacity" value="100" class="admin-input">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="editStatus" class="admin-input">
+                            <option value="upcoming">Upcoming</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="editDescription" rows="3" class="admin-input"
+                        style="width: 100%; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; border-radius: 8px; padding: 10px;"></textarea>
+                </div>
+                <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                    <input type="checkbox" id="editIsFeatured" style="width: 18px; height: 18px;">
+                    <label style="margin: 0;">Featured Event</label>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Save Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Management Modal -->
+    <div id="userModal" class="upload-modal">
+        <div class="upload-modal-overlay" onclick="closeUserModal()"></div>
+        <div class="upload-modal-content" style="max-width: 500px;">
+            <button class="upload-modal-close" onclick="closeUserModal()">&times;</button>
+            <h3 id="userModalTitle">Manage User</h3>
+
+            <form id="userForm" class="admin-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="editUserName" required class="admin-input" readonly
+                        style="opacity: 0.7; cursor: not-allowed;">
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="editUserUsername" required class="admin-input" readonly
+                        style="opacity: 0.7; cursor: not-allowed;">
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="editUserEmail" required class="admin-input" readonly
+                        style="opacity: 0.7; cursor: not-allowed;">
+                </div>
+                <div class="form-group" id="passwordGroup">
+                    <label>Password</label>
+                    <input type="password" id="editUserPassword" class="admin-input" readonly
+                        style="opacity: 0.7; cursor: not-allowed;">
+                    <p id="passwordHint" style="font-size: 11px; color: #888; margin-top: 5px;">Password editing is
+                        restricted for admins.</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="editUserRole" class="admin-input">
+                            <option value="member">Member</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="editUserStatus" class="admin-input">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Save User</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

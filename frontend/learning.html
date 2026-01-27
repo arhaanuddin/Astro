@@ -124,92 +124,6 @@
                         <a href="#" class="btn btn-primary btn-sm">Continue</a>
                     </div>
                 </div>
-
-                <div class="course-card">
-                    <div class="course-image ci-3">
-                        <span class="course-level intermediate">Intermediate</span>
-                    </div>
-                    <div class="course-content">
-                        <h3>Telescope Mastery</h3>
-                        <p>Everything you need to know about choosing, setting up, and using different types of
-                            telescopes.</p>
-                        <div class="course-meta">
-                            <span>📚 12 Lessons</span>
-                            <span>⏱️ 6 Hours</span>
-                        </div>
-                        <div class="course-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 30%"></div>
-                            </div>
-                            <span>30% Complete</span>
-                        </div>
-                        <a href="#" class="btn btn-primary btn-sm">Continue</a>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-image ci-4">
-                        <span class="course-level intermediate">Intermediate</span>
-                    </div>
-                    <div class="course-content">
-                        <h3>Astrophotography Basics</h3>
-                        <p>Capture stunning images of the night sky with your camera and basic equipment.</p>
-                        <div class="course-meta">
-                            <span>📚 15 Lessons</span>
-                            <span>⏱️ 8 Hours</span>
-                        </div>
-                        <div class="course-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 0%"></div>
-                            </div>
-                            <span>Not Started</span>
-                        </div>
-                        <a href="#" class="btn btn-primary btn-sm">Start Course</a>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-image ci-5">
-                        <span class="course-level advanced">Advanced</span>
-                    </div>
-                    <div class="course-content">
-                        <h3>Stellar Evolution</h3>
-                        <p>Understand the life cycle of stars, from formation to spectacular endings like supernovae.
-                        </p>
-                        <div class="course-meta">
-                            <span>📚 14 Lessons</span>
-                            <span>⏱️ 7 Hours</span>
-                        </div>
-                        <div class="course-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 0%"></div>
-                            </div>
-                            <span>Not Started</span>
-                        </div>
-                        <a href="#" class="btn btn-primary btn-sm">Start Course</a>
-                    </div>
-                </div>
-
-                <div class="course-card">
-                    <div class="course-image ci-6">
-                        <span class="course-level advanced">Advanced</span>
-                    </div>
-                    <div class="course-content">
-                        <h3>Cosmology & The Universe</h3>
-                        <p>Explore the origin, structure, and fate of our universe from the Big Bang to the present.</p>
-                        <div class="course-meta">
-                            <span>📚 20 Lessons</span>
-                            <span>⏱️ 10 Hours</span>
-                        </div>
-                        <div class="course-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 0%"></div>
-                            </div>
-                            <span>Not Started</span>
-                        </div>
-                        <a href="#" class="btn btn-primary btn-sm">Start Course</a>
-                    </div>
-                </div>
             </div>
 
             <!-- Resources Section -->
@@ -219,39 +133,21 @@
             </div>
 
             <div class="resources-grid">
-                <div class="resource-card">
+                <div class="resource-card" onclick="openResourceModal('star-maps')">
                     <div class="resource-icon">🗺️</div>
                     <div class="resource-content">
                         <h4>Monthly Star Maps</h4>
-                        <p>Printable star charts for current month</p>
-                        <a href="#" class="resource-link">Download PDF →</a>
+                        <p>Visual charts of constellations and deep-sky objects for the current month.</p>
+                        <span class="resource-link">View Details →</span>
                     </div>
                 </div>
 
-                <div class="resource-card">
-                    <div class="resource-icon">📋</div>
-                    <div class="resource-content">
-                        <h4>Messier Objects Checklist</h4>
-                        <p>Track your observations of all 110 objects</p>
-                        <a href="#" class="resource-link">Download PDF →</a>
-                    </div>
-                </div>
-
-                <div class="resource-card">
-                    <div class="resource-icon">🔭</div>
-                    <div class="resource-content">
-                        <h4>Telescope Buying Guide</h4>
-                        <p>Complete guide to choosing your first telescope</p>
-                        <a href="#" class="resource-link">Download PDF →</a>
-                    </div>
-                </div>
-
-                <div class="resource-card">
+                <div class="resource-card" onclick="openResourceModal('moon-phase')">
                     <div class="resource-icon">🌙</div>
                     <div class="resource-content">
                         <h4>Moon Phase Calendar</h4>
-                        <p>Plan your observations around lunar phases</p>
-                        <a href="#" class="resource-link">Download PDF →</a>
+                        <p>Track lunar cycles and plan your observation nights around peak visibility.</p>
+                        <span class="resource-link">View Details →</span>
                     </div>
                 </div>
             </div>
@@ -284,7 +180,6 @@
             <div class="footer-links-group">
                 <h4>Resources</h4>
                 <ul>
-                    <li><a href="#">Telescope Guide</a></li>
                     <li><a href="#">Star Maps</a></li>
                     <li><a href="#">FAQ</a></li>
                     <li><a href="#">Blog</a></li>
@@ -303,12 +198,127 @@
         </div>
     </footer>
 
+    <!-- Resource Modal -->
+    <div id="resourceModal" class="modal">
+        <div class="modal-content glass-card">
+            <span class="close-modal" onclick="closeResourceModal()">&times;</span>
+            <div id="modalBody">
+                <!-- Data will be injected here -->
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+    <script src="api.js"></script>
     <script src="auth.js"></script>
     <script>
         // Protect this page - members only
         if (!AstroAuth.requireMember()) {
             // Redirect is handled by requireMember
+        }
+
+        const modalData = {
+            'star-maps': {
+                title: '<span class="gradient-text">Monthly Star Maps</span>',
+                content: `
+                    <div class="resource-detail">
+                        <div class="detail-header">
+                            <div class="detail-icon">🗺️</div>
+                            <p>Current Month: January 2026</p>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Visible Constellations</h5>
+                            <ul>
+                                <li><strong>Orion (The Hunter):</strong> Dominating the southern sky with its prominent belt.</li>
+                                <li><strong>Gemini (The Twins):</strong> High in the east, featuring Pollux and Castor.</li>
+                                <li><strong>Taurus (The Bull):</strong> Look for the bright red star Aldebaran and the Pleiades cluster.</li>
+                            </ul>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Deep Sky Highlights</h5>
+                            <p>This month is perfect for observing the <strong>Great Orion Nebula (M42)</strong> and the <strong>Andromeda Galaxy (M31)</strong> as they reach peak altitude.</p>
+                        </div>
+                        <div class="visual-placeholder star-map-visual">
+                            <div class="constellation-plot"></div>
+                            <div class="map-overlay">
+                                <span>Northern Hemisphere • Jan 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'moon-phase': {
+                title: '<span class="gradient-text">Moon Phase Calendar</span>',
+                content: `
+                    <div class="resource-detail">
+                        <div class="detail-header">
+                            <div class="detail-icon">🌙</div>
+                            <p>Current Phase: Waxing Gibbous</p>
+                        </div>
+                        <div class="detail-grid">
+                            <div class="phase-item">
+                                <span class="phase-label">Illumination</span>
+                                <span class="phase-value">78%</span>
+                            </div>
+                            <div class="phase-item">
+                                <span class="phase-label">Moonset</span>
+                                <span class="phase-value">02:15 AM</span>
+                            </div>
+                            <div class="phase-item">
+                                <span class="phase-label">Next Full Moon</span>
+                                <span class="phase-value">Feb 2nd</span>
+                            </div>
+                        </div>
+                        <div class="detail-section">
+                            <h5>Observation Tip</h5>
+                            <p>The "Terminator Line" (the border between shadow and light) is the best place to see craters and mountains in high relief today.</p>
+                        </div>
+                        <div class="visual-placeholder moon-visual">
+                            <div class="moon-circle"></div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function openResourceModal(type) {
+            const data = modalData[type];
+            if (!data) return;
+
+            const modal = document.getElementById('resourceModal');
+            const modalBody = document.getElementById('modalBody');
+
+            modalBody.innerHTML = `
+                <h2 class="modal-title">${data.title}</h2>
+                <div class="modal-scroll-area">
+                    ${data.content}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-sm" onclick="closeResourceModal()">Close View</button>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeResourceModal() {
+            const modal = document.getElementById('resourceModal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }, 300);
+        }
+
+        // Close on outside click
+        window.onclick = function (event) {
+            const modal = document.getElementById('resourceModal');
+            if (event.target == modal) {
+                closeResourceModal();
+            }
         }
     </script>
 </body>

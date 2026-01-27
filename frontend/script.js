@@ -3,8 +3,8 @@
    ======================================== */
 
 // Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-    
+document.addEventListener('DOMContentLoaded', function () {
+
     // Initialize all functions
     createStarField();
     initNavigation();
@@ -61,10 +61,10 @@ function createStarField() {
 function createStar(container, options) {
     const star = document.createElement('div');
     star.className = 'star';
-    
+
     const x = Math.random() * 100;
     const y = Math.random() * 100;
-    
+
     star.style.cssText = `
         position: absolute;
         left: ${x}%;
@@ -77,22 +77,22 @@ function createStar(container, options) {
         animation: twinkle ${options.duration}s ease-in-out infinite;
         animation-delay: ${Math.random() * options.duration}s;
     `;
-    
+
     container.appendChild(star);
 }
 
 function addColoredStars(container) {
     const colors = ['#a78bfa', '#06b6d4', '#f472b6', '#fbbf24'];
-    
+
     for (let i = 0; i < 15; i++) {
         const star = document.createElement('div');
         star.className = 'star colored-star';
-        
+
         const x = Math.random() * 100;
         const y = Math.random() * 100;
         const color = colors[Math.floor(Math.random() * colors.length)];
         const size = Math.random() * 3 + 2;
-        
+
         star.style.cssText = `
             position: absolute;
             left: ${x}%;
@@ -106,7 +106,7 @@ function addColoredStars(container) {
             animation: twinkle ${Math.random() * 3 + 3}s ease-in-out infinite;
             animation-delay: ${Math.random() * 3}s;
         `;
-        
+
         container.appendChild(star);
     }
 }
@@ -140,10 +140,10 @@ function createShootingStars() {
 function createShootingStar(container) {
     const shootingStar = document.createElement('div');
     shootingStar.className = 'shooting-star';
-    
+
     const startX = Math.random() * 100;
     const startY = Math.random() * 50;
-    
+
     shootingStar.style.cssText = `
         position: absolute;
         left: ${startX}%;
@@ -155,9 +155,9 @@ function createShootingStar(container) {
         transform: rotate(-45deg);
         animation: shootingStar 1s ease-out forwards;
     `;
-    
+
     container.appendChild(shootingStar);
-    
+
     // Remove after animation
     setTimeout(() => {
         shootingStar.remove();
@@ -174,7 +174,7 @@ function initNavigation() {
 
     // Mobile menu toggle
     if (hamburger && navLinks) {
-        hamburger.addEventListener('click', function() {
+        hamburger.addEventListener('click', function () {
             hamburger.classList.toggle('active');
             navLinks.classList.toggle('active');
             document.body.classList.toggle('menu-open');
@@ -183,7 +183,7 @@ function initNavigation() {
         // Close menu when clicking a link
         const links = navLinks.querySelectorAll('a');
         links.forEach(link => {
-            link.addEventListener('click', function() {
+            link.addEventListener('click', function () {
                 hamburger.classList.remove('active');
                 navLinks.classList.remove('active');
                 document.body.classList.remove('menu-open');
@@ -191,7 +191,7 @@ function initNavigation() {
         });
 
         // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
                 hamburger.classList.remove('active');
                 navLinks.classList.remove('active');
@@ -202,7 +202,7 @@ function initNavigation() {
 
     // Navbar scroll effect
     if (navbar) {
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             if (window.scrollY > 50) {
                 navbar.classList.add('scrolled');
             } else {
@@ -218,7 +218,7 @@ function initNavigation() {
 function initScrollEffects() {
     // Smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+        anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
             if (href !== '#') {
                 e.preventDefault();
@@ -236,7 +236,7 @@ function initScrollEffects() {
     // Scroll indicator click
     const scrollIndicator = document.querySelector('.scroll-indicator');
     if (scrollIndicator) {
-        scrollIndicator.addEventListener('click', function() {
+        scrollIndicator.addEventListener('click', function () {
             const nextSection = document.querySelector('.welcome-section, .page-content, .features-section');
             if (nextSection) {
                 nextSection.scrollIntoView({
@@ -282,22 +282,22 @@ function initScrollEffects() {
    ======================================== */
 function initGalleryFilters() {
     const filterTabs = document.querySelectorAll('.filter-tab');
-    const galleryItems = document.querySelectorAll('.gallery-item');
 
-    if (filterTabs.length === 0 || galleryItems.length === 0) return;
+    if (filterTabs.length === 0) return;
 
     filterTabs.forEach(tab => {
-        tab.addEventListener('click', function() {
+        tab.addEventListener('click', function () {
             // Update active tab
             filterTabs.forEach(t => t.classList.remove('active'));
             this.classList.add('active');
 
             const filter = this.getAttribute('data-filter') || this.textContent.toLowerCase();
+            const galleryItems = document.querySelectorAll('.gallery-item');
 
             // Filter gallery items
             galleryItems.forEach(item => {
                 const category = item.getAttribute('data-category');
-                
+
                 if (filter === 'all' || category === filter) {
                     item.style.display = 'block';
                     setTimeout(() => {
@@ -344,7 +344,10 @@ function addStaggerAnimation(selector, delay) {
 
 function animateCounters() {
     const counters = document.querySelectorAll('.stat-number');
-    
+
+    // Skip these IDs as they are populated dynamically by API calls
+    const dynamicIds = ['submissionsCount', 'approvedCount', 'pendingCount', 'coursesProgress'];
+
     const observerOptions = {
         root: null,
         rootMargin: '0px',
@@ -355,14 +358,21 @@ function animateCounters() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const counter = entry.target;
+
+                // Skip dynamically loaded counters
+                if (dynamicIds.includes(counter.id)) {
+                    counterObserver.unobserve(counter);
+                    return;
+                }
+
                 const target = parseInt(counter.textContent.replace(/\D/g, ''));
                 const suffix = counter.textContent.replace(/[0-9]/g, '');
-                
+
                 if (!isNaN(target) && !counter.classList.contains('counted')) {
                     counter.classList.add('counted');
                     animateCounter(counter, target, suffix);
                 }
-                
+
                 counterObserver.unobserve(counter);
             }
         });
@@ -391,12 +401,12 @@ function animateCounter(element, target, suffix) {
 
 function initParallax() {
     const hero = document.querySelector('.hero');
-    
+
     if (hero) {
         window.addEventListener('scroll', () => {
             const scrolled = window.scrollY;
             const heroContent = hero.querySelector('.hero-content');
-            
+
             if (heroContent && scrolled < window.innerHeight) {
                 heroContent.style.transform = `translateY(${scrolled * 0.3}px)`;
                 heroContent.style.opacity = 1 - (scrolled / window.innerHeight);
@@ -408,28 +418,28 @@ function initParallax() {
 /* ========================================
    FORM HANDLING
    ======================================== */
-document.addEventListener('submit', function(e) {
+document.addEventListener('submit', function (e) {
     if (e.target.classList.contains('contact-form')) {
         e.preventDefault();
-        
+
         // Get form data
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
-        
+
         // Simulate form submission
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
-        
+
         submitBtn.textContent = 'Sending...';
         submitBtn.disabled = true;
-        
+
         setTimeout(() => {
             submitBtn.textContent = 'Message Sent!';
             submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-            
+
             // Reset form
             e.target.reset();
-            
+
             setTimeout(() => {
                 submitBtn.textContent = originalText;
                 submitBtn.style.background = '';
@@ -459,7 +469,7 @@ function debounce(func, wait) {
 // Throttle function for scroll events
 function throttle(func, limit) {
     let inThrottle;
-    return function(...args) {
+    return function (...args) {
         if (!inThrottle) {
             func.apply(this, args);
             inThrottle = true;
@@ -482,7 +492,7 @@ function isInViewport(element) {
 /* ========================================
    VIDEO PLAY FUNCTIONALITY
    ======================================== */
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const playBtn = e.target.closest('.video-play-overlay, .play-btn');
     if (playBtn) {
         e.preventDefault();
@@ -494,12 +504,12 @@ document.addEventListener('click', function(e) {
 /* ========================================
    GALLERY LIGHTBOX (Basic)
    ======================================== */
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const galleryItem = e.target.closest('.gallery-item:not(.video-item)');
     if (galleryItem) {
         const title = galleryItem.querySelector('h3')?.textContent || 'Gallery Image';
         const desc = galleryItem.querySelector('p')?.textContent || '';
-        
+
         // In a real implementation, this would open a lightbox
         // For now, just show the item was clicked
         console.log(`Clicked: ${title} - ${desc}`);
@@ -509,12 +519,12 @@ document.addEventListener('click', function(e) {
 /* ========================================
    EVENT REGISTRATION (Basic)
    ======================================== */
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (e.target.classList.contains('event-register-btn')) {
         e.preventDefault();
         const eventCard = e.target.closest('.event-card');
         const eventTitle = eventCard?.querySelector('h3')?.textContent || 'Event';
-        
+
         // In a real implementation, this would open a registration modal
         alert(`Registration for "${eventTitle}" - This would open a registration form.`);
     }
@@ -523,12 +533,12 @@ document.addEventListener('click', function(e) {
 /* ========================================
    COURSE ACTIONS
    ======================================== */
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (e.target.classList.contains('btn-sm') && e.target.closest('.course-card')) {
         e.preventDefault();
         const courseCard = e.target.closest('.course-card');
         const courseTitle = courseCard?.querySelector('h3')?.textContent || 'Course';
-        
+
         // In a real implementation, this would navigate to the course
         alert(`Opening course: "${courseTitle}" - This would navigate to the course page.`);
     }
@@ -537,11 +547,11 @@ document.addEventListener('click', function(e) {
 /* ========================================
    INITIALIZE ON PAGE LOAD
    ======================================== */
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     // Remove loading state if any
     document.body.classList.remove('loading');
     document.body.classList.add('loaded');
-    
+
     // Trigger initial animations
     setTimeout(() => {
         document.querySelectorAll('.hero-content, .page-header').forEach(el => {
@@ -553,12 +563,12 @@ window.addEventListener('load', function() {
 /* ========================================
    HANDLE RESIZE
    ======================================== */
-window.addEventListener('resize', debounce(function() {
+window.addEventListener('resize', debounce(function () {
     // Close mobile menu on resize to desktop
     if (window.innerWidth > 768) {
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('navLinks');
-        
+
         if (hamburger && navLinks) {
             hamburger.classList.remove('active');
             navLinks.classList.remove('active');
