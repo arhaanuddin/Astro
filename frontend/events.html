@@ -21,7 +21,17 @@
 
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
-        <a href="index.html" class="logo">ASTRONET</a>
+        <div class="navbar-brand-group">
+            <div class="partner-logos-header">
+                <img src="images/sju_logo-removebg-preview.png" alt="St. Joseph's University"
+                    title="St. Joseph's University" class="sju-logo">
+                <div class="logo-container saps-container">
+                    <img src="images/SAPS-logo-new-removebg-preview.png" alt="SAPS" title="SAPS"
+                        class="saps-logo-header">
+                </div>
+            </div>
+            <a href="index.html" class="logo">ASTRONET</a>
+        </div>
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Home</a></li>
             <li><a href="gallery.html">Gallery</a></li>
@@ -133,7 +143,7 @@
                 </div>
                 <div class="form-group">
                     <label>Phone Number</label>
-                    <input type="tel" id="regPhone" class="admin-input" placeholder="Your contact number">
+                    <input type="tel" id="regPhone" class="admin-input" placeholder="Your contact number" value="+91 ">
                 </div>
                 <div class="form-group">
                     <label>Additional Guests</label>
@@ -303,6 +313,19 @@
                             phone: document.getElementById('regPhone').value,
                             guest_count: parseInt(document.getElementById('regGuests').value) || 0
                         };
+
+                        // Phone Validation
+                        const phoneStr = data.phone.replace(/\D/g, ''); // Remove non-digits
+                        // Check if it has 10 digits (ignoring the 91 if present, though cleaner to just check strict length)
+                        // User wants 10 digit check. If they kept +91, we expect 12 digits total.
+                        // Let's support 10 digits input or 12 digits (91 + 10).
+
+                        const isValidPhone = (phoneStr.length === 10) || (phoneStr.length === 12 && phoneStr.startsWith('91'));
+
+                        if (!isValidPhone) {
+                            alert('Please enter a valid 10-digit phone number.');
+                            return;
+                        }
 
                         try {
                             const response = await AstroAPI.events.register(selectedEventId, data);

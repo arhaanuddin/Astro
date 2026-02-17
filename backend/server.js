@@ -24,6 +24,9 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+// Serve Frontend Static Files
+app.use(express.static(path.join(__dirname, '../frontend')));
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);

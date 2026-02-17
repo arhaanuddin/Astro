@@ -64,6 +64,32 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
             });
         }
 
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid email format'
+            });
+        }
+
+        // Password length
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                error: 'Password must be at least 6 characters'
+            });
+        }
+
+        // Role validation
+        const validRoles = ['admin', 'member'];
+        if (role && !validRoles.includes(role)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid role'
+            });
+        }
+
         // Check if username or email exists
         const [existing] = await db.execute(
             'SELECT id FROM users WHERE username = ? OR email = ?',
@@ -138,16 +164,27 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
                 }
             }
         } else {
-            // Admin editing themselves - full access
-            query = 'UPDATE users SET username = ?, email = ?, name = ?, role = ?, status = ?';
-            params = [username, email, name, role, status];
+            // Admin editing themselves - partial update support
+            const fields = [];
+            params = [];
+
+            if (username) { fields.push('username = ?'); params.push(username); }
+            if (email) { fields.push('email = ?'); params.push(email); }
+            if (name) { fields.push('name = ?'); params.push(name); }
+            if (role) { fields.push('role = ?'); params.push(role); }
+            if (status) { fields.push('status = ?'); params.push(status); }
 
             if (password) {
                 const passwordHash = await bcrypt.hash(password, 10);
-                query += ', password_hash = ?';
+                fields.push('password_hash = ?');
                 params.push(passwordHash);
             }
-            query += ' WHERE id = ?';
+
+            if (fields.length === 0) {
+                return res.json({ success: true, message: 'No changes detected' });
+            }
+
+            query = `UPDATE users SET ${fields.join(', ')} WHERE id = ?`;
             params.push(targetUserId);
 
             await db.execute(query, params);

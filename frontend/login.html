@@ -32,10 +32,10 @@
 
                 <form id="loginForm" class="login-form">
                     <div class="form-group">
-                        <label for="username">Username</label>
+                        <label for="username">Full Name</label>
                         <div class="input-wrapper">
                             <span class="input-icon">👤</span>
-                            <input type="text" id="username" name="username" placeholder="Enter username" required>
+                            <input type="text" id="username" name="username" placeholder="Enter your name" required>
                         </div>
                     </div>
 
@@ -58,12 +58,12 @@
                     </button>
                 </form>
 
-                <div class="login-footer">
-                    <p style="margin-bottom: 15px; color: #9ca3af;">Don't have an account?</p>
+                <div class="login-footer" style="margin-top: 5px;">
+                    <p style="margin-bottom: 5px; color: #9ca3af;">Don't have an account?</p>
                     <button type="button" onclick="toggleAuthMode('signup')" class="btn btn-outline btn-full"
                         style="border: 1px solid rgba(167, 139, 250, 0.3); background: rgba(167, 139, 250, 0.05);">Join
                         the Society Today</button>
-                    <a href="index.html" class="back-link" style="margin-top: 20px;">← Back to Website</a>
+                    <a href="index.html" class="back-link" style="margin-top: 10px;">← Back to Website</a>
                 </div>
             </div>
 
@@ -93,14 +93,6 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="signupUsername">Username</label>
-                        <div class="input-wrapper">
-                            <span class="input-icon">👤</span>
-                            <input type="text" id="signupUsername" placeholder="Choose a username" required>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
                         <label for="signupPassword">Password</label>
                         <div class="input-wrapper">
                             <span class="input-icon">🔒</span>
@@ -116,12 +108,12 @@
                     </button>
                 </form>
 
-                <div class="login-footer">
-                    <p style="margin-bottom: 15px; color: #9ca3af;">Already a member?</p>
+                <div class="login-footer" style="margin-top: 5px;">
+                    <p style="margin-bottom: 5px; color: #9ca3af;">Already a member?</p>
                     <button type="button" onclick="toggleAuthMode('login')" class="btn btn-outline btn-full"
                         style="border: 1px solid rgba(167, 139, 250, 0.3); background: rgba(167, 139, 250, 0.05);">Back
                         to Sign In</button>
-                    <a href="index.html" class="back-link" style="margin-top: 20px;">← Back to Website</a>
+                    <a href="index.html" class="back-link" style="margin-top: 10px;">← Back to Website</a>
                 </div>
             </div>
 
@@ -239,9 +231,11 @@
             const data = {
                 name: document.getElementById('signupName').value,
                 email: document.getElementById('signupEmail').value,
-                username: document.getElementById('signupUsername').value,
                 password: document.getElementById('signupPassword').value
             };
+
+            // Use name as username (clean it up) + random suffix to ensure uniqueness
+            const username = data.name.toLowerCase().replace(/\s+/g, '_') + '_' + Math.floor(Math.random() * 1000);
 
             const errorEl = document.getElementById('signupError');
             const submitBtn = this.querySelector('button[type="submit"]');
@@ -251,8 +245,8 @@
             errorEl.style.display = 'none';
 
             try {
-                console.log('🚀 Initiating registration for:', data.username);
-                const result = await AstroAuth.register(data.username, data.email, data.password, data.name);
+                console.log('🚀 Initiating registration for:', username);
+                const result = await AstroAuth.register(username, data.email, data.password, data.name);
                 console.log('📦 Registration result:', result);
 
                 if (result.success) {

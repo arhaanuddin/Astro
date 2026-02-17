@@ -3,8 +3,8 @@ const router = express.Router();
 const db = require('../config/database');
 const { authenticateToken, requireAdmin, requireMember } = require('../middleware/auth');
 
-// GET /api/events - Get all events
-router.get('/', authenticateToken, async (req, res) => {
+// GET /api/events - Get all events (Public)
+router.get('/', async (req, res) => {
     try {
         const [events] = await db.execute(`
             SELECT e.*, 
@@ -55,8 +55,25 @@ router.get('/featured', async (req, res) => {
     }
 });
 
-// GET /api/events/:id - Get single event
-router.get('/:id', authenticateToken, async (req, res) => {
+// GET /api/events/:id - Get single event (Public with optional Auth check)
+const optionalAuth = async (req, res, next) => {
+    // Manually check for token but don't fail if missing
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (token) {
+        const jwt = require('jsonwebtoken');
+        try {
+            const user = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = user;
+        } catch (err) {
+            // Invalid token, ignore
+        }
+    }
+    next();
+};
+
+router.get('/:id', optionalAuth, async (req, res) => {
     try {
         const [events] = await db.execute(`
             SELECT e.*, COUNT(er.id) as registration_count
@@ -73,14 +90,17 @@ router.get('/:id', authenticateToken, async (req, res) => {
             });
         }
 
-        // Check if current user is registered
-        const [registration] = await db.execute(
-            'SELECT id FROM event_registrations WHERE event_id = ? AND user_id = ? AND status = "registered"',
-            [req.params.id, req.user.id]
-        );
-
         const event = events[0];
-        event.is_registered = registration.length > 0;
+        event.is_registered = false;
+
+        // Check registration status ONLY if user is logged in
+        if (req.user) {
+            const [registration] = await db.execute(
+                'SELECT id FROM event_registrations WHERE event_id = ? AND user_id = ? AND status = "registered"',
+                [req.params.id, req.user.id]
+            );
+            event.is_registered = registration.length > 0;
+        }
 
         res.json({
             success: true,
@@ -100,10 +120,17 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { title, description, event_date, start_time, end_time, location, event_type, capacity, is_featured } = req.body;
 
-        if (!title || !event_date) {
+        if (!title || !event_date || !start_time || !end_time || !location) {
             return res.status(400).json({
                 success: false,
-                error: 'Title and date are required'
+                error: 'Title, date, time, and location are required'
+            });
+        }
+
+        if (capacity && (isNaN(capacity) || capacity < 0)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Capacity must be a positive number'
             });
         }
 
@@ -252,6 +279,23 @@ router.post('/:id/register', authenticateToken, async (req, res) => {
             });
         }
 
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid email format'
+            });
+        }
+
+        // Guest count validation
+        if (guest_count !== undefined && guest_count !== null && (isNaN(guest_count) || guest_count < 0)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Guest count must be a non-negative number'
+            });
+        }
+
         await db.execute(
             `INSERT INTO event_registrations (event_id, user_id, full_name, email, phone, guest_count) 
              VALUES (?, ?, ?, ?, ?, ?)`,
@@ -266,7 +310,7 @@ router.post('/:id/register', authenticateToken, async (req, res) => {
         console.error('Register for event error:', error);
         res.status(500).json({
             success: false,
-            error: 'Failed to register for event'
+            error: error.message || 'Failed to register for event'
         });
     }
 });
@@ -312,6 +356,38 @@ router.get('/:id/registrations', authenticateToken, requireAdmin, async (req, re
         res.status(500).json({
             success: false,
             error: 'Failed to fetch registrations'
+        });
+    }
+});
+
+
+// DELETE /api/events/registrations/:id - Delete a registration (Admin only)
+router.delete('/registrations/:id', authenticateToken, requireAdmin, async (req, res) => {
+    try {
+        const registrationId = req.params.id;
+
+        // Get details for logging
+        const [reg] = await db.execute('SELECT event_id, user_id FROM event_registrations WHERE id = ?', [registrationId]);
+
+        if (reg.length > 0) {
+            await db.execute('DELETE FROM event_registrations WHERE id = ?', [registrationId]);
+
+            // Log Activity
+            await db.execute(
+                'INSERT INTO activity_log (user_id, action_type, action_detail) VALUES (?, ?, ?)',
+                [req.user.id, 'event', `Removed registration ID: ${registrationId}`]
+            );
+        }
+
+        res.json({
+            success: true,
+            message: 'Registration removed'
+        });
+    } catch (error) {
+        console.error('Delete registration error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to delete registration'
         });
     }
 });

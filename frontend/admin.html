@@ -290,7 +290,6 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Username</th>
                                 <th>Email</th>
                                 <th>Role</th>
                                 <th>Status</th>
@@ -337,20 +336,39 @@
                         <div class="settings-form">
                             <div class="form-group">
                                 <label>Admin Username</label>
-                                <input type="text" value="admin" class="admin-input">
+                                <input type="text" id="adminSettingsUsername" class="admin-input"
+                                    placeholder="Enter username" autocomplete="off">
                             </div>
                             <div class="form-group">
                                 <label>New Password</label>
-                                <input type="password" placeholder="Enter new password" class="admin-input">
+                                <div class="password-wrapper" style="position: relative;">
+                                    <input type="password" id="adminSettingsNewPassword"
+                                        placeholder="Enter new password" class="admin-input"
+                                        style="padding-right: 40px;" autocomplete="new-password">
+                                    <button type="button" class="password-toggle"
+                                        onclick="togglePassword('adminSettingsNewPassword', this)"
+                                        style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #a78bfa; cursor: pointer; font-size: 1.2rem;">
+                                        👁️
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <label>Confirm Password</label>
+                                    <div class="password-wrapper" style="position: relative;">
+                                        <input type="password" id="adminSettingsConfirmPassword"
+                                            placeholder="Confirm new password" class="admin-input"
+                                            style="padding-right: 40px;" autocomplete="new-password">
+                                        <button type="button" class="password-toggle"
+                                            onclick="togglePassword('adminSettingsConfirmPassword', this)"
+                                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #a78bfa; cursor: pointer; font-size: 1.2rem;">
+                                            👁️
+                                        </button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" onclick="updateAdminProfile()"
+                                    style="width: 100%; margin-top: 20px;">Update Profile</button>
                             </div>
-                            <div class="form-group">
-                                <label>Confirm Password</label>
-                                <input type="password" placeholder="Confirm new password" class="admin-input">
-                            </div>
-                            <button class="btn btn-primary">Update Password</button>
                         </div>
                     </div>
-                </div>
             </section>
         </main>
     </div>
@@ -492,7 +510,7 @@
                     pendingList.innerHTML = '<p class="empty-state">No pending submissions</p>';
                 } else {
                     pendingList.innerHTML = pendingSubmissions.map(s => {
-                        const imageUrl = s.image_path ? 'http://localhost:3000' + s.image_path : s.image_data;
+                        const imageUrl = s.image_path ? s.image_path : s.image_data;
                         return `
                         <div class="submission-admin-item">
                             <div class="submission-preview">
@@ -516,7 +534,7 @@
                     approvedList.innerHTML = '<p class="empty-state">No approved submissions yet</p>';
                 } else {
                     approvedList.innerHTML = approvedSubmissions.map(s => {
-                        const imageUrl = s.image_path ? 'http://localhost:3000' + s.image_path : s.image_data;
+                        const imageUrl = s.image_path ? s.image_path : s.image_data;
                         return `
                         <div class="submission-admin-item approved">
                             <div class="submission-preview">
@@ -550,7 +568,7 @@
                 }
 
                 grid.innerHTML = items.map(item => {
-                    const imageUrl = item.image_path ? 'http://localhost:3000' + item.image_path : item.image_data;
+                    const imageUrl = item.image_path ? item.image_path : item.image_data;
                     return `
                     <div class="gallery-admin-item">
                         <div class="gallery-thumb" style="background-image: url('${imageUrl}'); background-size: cover; background-position: center;"></div>
@@ -762,6 +780,7 @@
             const modal = document.getElementById('registrationsModal');
             const list = document.getElementById('registrationsList');
             document.getElementById('regModalEventTitle').textContent = eventTitle;
+            window.currentViewRegistrationsEventId = eventId;
 
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -781,12 +800,44 @@
                             <td>${r.email}</td>
                             <td>${r.phone || '-'}</td>
                             <td>${r.guest_count}</td>
+                            <td>
+                                <button class="action-btn-sm danger" onclick="deleteRegistration(${r.id})" title="Remove">🗑️</button>
+                            </td>
                         </tr>
                     `).join('');
                 }
             } catch (error) {
                 console.error('Error loading registrations:', error);
-                list.innerHTML = '<tr><td colspan="4" class="empty-state">Error loading registrations</td></tr>';
+                list.innerHTML = '<tr><td colspan="5" class="empty-state">Error loading registrations</td></tr>';
+            }
+        }
+
+        window.deleteRegistration = async function (id) {
+            if (confirm('Are you sure you want to remove this registration?')) {
+                try {
+                    const response = await AstroAPI.events.deleteRegistration(id);
+                    if (response.success) {
+                        // Refresh the list - we need the current event ID
+                        // We can get it from the open modal context if we stored it, 
+                        // or just simple reload. Since viewRegistrations is async and we are inside a map,
+                        // let's just remove the row or reload. 
+                        // Simplest is to find the row or just reload the modal content if we have the eventId.
+                        // We do have 'currentEditingEventId' but that is for the EDIT modal.
+                        // The registrations modal doesn't seem to store the current event ID in a global var.
+                        // Let's modify viewRegistrations to store it.
+
+                        // Actually, viewRegistrations is called with eventId. I should store it.
+                        if (window.currentViewRegistrationsEventId) {
+                            viewRegistrations(window.currentViewRegistrationsEventId, document.getElementById('regModalEventTitle').textContent);
+                            loadAdminEvents(); // Refresh main list to update counts
+                        } else {
+                            alert('Registration deleted. Please close and reopen the modal to see changes.');
+                            loadAdminEvents();
+                        }
+                    }
+                } catch (error) {
+                    alert('Failed to delete registration: ' + error.message);
+                }
             }
         }
 
@@ -851,7 +902,6 @@
                     tbody.innerHTML = response.users.map(user => `
                         <tr>
                             <td>${user.name}</td>
-                            <td>${user.username}</td>
                             <td>${user.email}</td>
                             <td><span class="status-badge ${user.role}">${user.role}</span></td>
                             <td><span class="status-badge ${user.status || 'active'}">${user.status || 'active'}</span></td>
@@ -930,7 +980,40 @@
             const eventForm = document.getElementById('eventForm');
             if (eventForm) {
                 eventForm.addEventListener('submit', async function (e) {
-                    // ... existing event form logic ...
+                    e.preventDefault();
+
+                    const data = {
+                        title: document.getElementById('editEventTitle').value,
+                        event_date: document.getElementById('editEventDate').value,
+                        start_time: document.getElementById('editStartTime').value,
+                        end_time: document.getElementById('editEndTime').value,
+                        location: document.getElementById('editLocation').value,
+                        event_type: document.getElementById('editEventType').value,
+                        capacity: parseInt(document.getElementById('editCapacity').value),
+                        description: document.getElementById('editDescription').value,
+                        is_featured: document.getElementById('editIsFeatured').checked,
+                        status: document.getElementById('editStatus').value
+                    };
+
+                    try {
+                        let response;
+                        if (currentEditingEventId) {
+                            response = await AstroAPI.events.update(currentEditingEventId, data);
+                        } else {
+                            response = await AstroAPI.events.create(data);
+                        }
+
+                        if (response.success) {
+                            alert(currentEditingEventId ? 'Event updated successfully!' : 'Event created successfully!');
+                            closeEventModal();
+                            loadAdminEvents(); // Refresh list
+                        } else {
+                            alert('Error: ' + (response.error || 'Operation failed'));
+                        }
+                    } catch (error) {
+                        console.error('Event save error:', error);
+                        alert('Error saving event: ' + error.message);
+                    }
                 });
             }
 
@@ -1023,6 +1106,65 @@
             }
         }
 
+        // Password Toggle
+        window.togglePassword = function (inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🔒';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+
+        // Update Admin Profile (Username & Password)
+        window.updateAdminProfile = async function () {
+            const username = document.getElementById('adminSettingsUsername').value;
+            const newPass = document.getElementById('adminSettingsNewPassword').value;
+            const confirmPass = document.getElementById('adminSettingsConfirmPassword').value;
+            const currentUser = AstroAuth.getCurrentUser();
+
+            if (!username) {
+                alert('Username cannot be empty');
+                return;
+            }
+
+            const updateData = { username };
+
+            // Only validate password if one is entered
+            if (newPass) {
+                if (newPass.length < 6) {
+                    alert('Password must be at least 6 characters long');
+                    return;
+                }
+                if (newPass !== confirmPass) {
+                    alert('Passwords do not match');
+                    return;
+                }
+                updateData.password = newPass;
+            }
+
+            if (!currentUser) {
+                alert('Session expired. Please login again.');
+                return;
+            }
+
+            try {
+                const response = await AstroAPI.users.update(currentUser.id, updateData);
+
+                if (response.success) {
+                    alert('Profile updated successfully! Please login again with your new credentials.');
+                    AstroAuth.logout(); // Force re-login
+                } else {
+                    alert('Error: ' + (response.error || 'Update failed'));
+                }
+            } catch (error) {
+                console.error('Profile update error:', error);
+                alert('Error updating profile: ' + error.message);
+            }
+        }
+
         // Image preview for admin upload
         const adminImageInput = document.getElementById('adminImageFile');
         const adminImagePreview = document.getElementById('adminImagePreview');
@@ -1072,6 +1214,7 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Guests</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody id="registrationsList"></tbody>
@@ -1163,10 +1306,9 @@
                     <input type="text" id="editUserName" required class="admin-input" readonly
                         style="opacity: 0.7; cursor: not-allowed;">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="display: none;">
                     <label>Username</label>
-                    <input type="text" id="editUserUsername" required class="admin-input" readonly
-                        style="opacity: 0.7; cursor: not-allowed;">
+                    <input type="text" id="editUserUsername" class="admin-input" readonly>
                 </div>
                 <div class="form-group">
                     <label>Email Address</label>

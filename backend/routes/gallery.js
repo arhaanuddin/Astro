@@ -155,6 +155,21 @@ router.post('/submit', authenticateToken, upload.single('image'), async (req, re
             });
         }
 
+        if (title.length > 100) {
+            return res.status(400).json({
+                success: false,
+                error: 'Title must be less than 100 characters'
+            });
+        }
+
+        const validCategories = ['astro', 'events', 'workshops'];
+        if (category && !validCategories.includes(category)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid category'
+            });
+        }
+
         let imagePath = null;
         let imageDataStr = null;
 

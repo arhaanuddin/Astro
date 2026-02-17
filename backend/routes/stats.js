@@ -10,12 +10,12 @@ router.get('/', authenticateToken, requireAdmin, async (req, res) => {
         const [users] = await db.execute('SELECT COUNT(*) as count FROM users');
         const memberCount = users[0].count;
 
-        // Query Upcoming Events (Today onwards)
-        const [upcomingEventsResult] = await db.execute('SELECT COUNT(*) as count FROM events WHERE event_date >= CURDATE()');
+        // Query Upcoming Events (Based on status)
+        const [upcomingEventsResult] = await db.execute("SELECT COUNT(*) as count FROM events WHERE status IN ('upcoming', 'active')");
         const upcomingEvents = upcomingEventsResult[0].count;
 
-        // Query Completed Events (Before today)
-        const [completedEventsResult] = await db.execute('SELECT COUNT(*) as count FROM events WHERE event_date < CURDATE()');
+        // Query Completed Events (Based on status)
+        const [completedEventsResult] = await db.execute("SELECT COUNT(*) as count FROM events WHERE status = 'completed'");
         const completedEvents = completedEventsResult[0].count;
 
         // Query Member Gallery Uploads (Approved)

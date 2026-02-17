@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const db = require('../config/database');
 const { authenticateToken, generateToken } = require('../middleware/auth');
+const { sendWelcomeEmail } = require('../utils/emailService');
 
 // POST /api/auth/login - Login user
 router.post('/login', async (req, res) => {
@@ -77,6 +78,23 @@ router.post('/register', async (req, res) => {
             });
         }
 
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Invalid email format'
+            });
+        }
+
+        // Password length validation
+        if (password.length < 6) {
+            return res.status(400).json({
+                success: false,
+                error: 'Password must be at least 6 characters'
+            });
+        }
+
         // Check if username or email exists
         const [existing] = await db.execute(
             'SELECT id FROM users WHERE username = ? OR email = ?',
@@ -107,6 +125,9 @@ router.post('/register', async (req, res) => {
         );
 
         console.log('✅ User created with ID:', result.insertId);
+
+        // Send Welcome Email (async, don't block response)
+        sendWelcomeEmail(email, name).catch(err => console.error('📧 Email sending failed:', err));
 
         const token = generateToken({
             id: result.insertId,

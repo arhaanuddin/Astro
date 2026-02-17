@@ -4,8 +4,8 @@
    ======================================== */
 
 const AstroAPI = {
-    // Base URL for API - using IP to avoid IPv6 issues
-    baseURL: 'http://127.0.0.1:3000/api',
+    // Base URL for API - relative path for unified deployment
+    baseURL: '/api',
 
     // Storage key for JWT token
     TOKEN_KEY: 'astronetToken',
@@ -187,6 +187,9 @@ const AstroAPI = {
         },
         getRegistrations: function (id) {
             return AstroAPI.get(`/events/${id}/registrations`);
+        },
+        deleteRegistration: function (id) {
+            return AstroAPI.delete(`/events/registrations/${id}`);
         }
     },
 

@@ -519,16 +519,7 @@ document.addEventListener('click', function (e) {
 /* ========================================
    EVENT REGISTRATION (Basic)
    ======================================== */
-document.addEventListener('click', function (e) {
-    if (e.target.classList.contains('event-register-btn')) {
-        e.preventDefault();
-        const eventCard = e.target.closest('.event-card');
-        const eventTitle = eventCard?.querySelector('h3')?.textContent || 'Event';
 
-        // In a real implementation, this would open a registration modal
-        alert(`Registration for "${eventTitle}" - This would open a registration form.`);
-    }
-});
 
 /* ========================================
    COURSE ACTIONS
