@@ -56,13 +56,8 @@ app.use((req, res) => {
     });
 });
 
-// Export app for serverless deployment (Vercel)
-module.exports = app;
-
-// Start server only in local development
-if (require.main === module) {
-    app.listen(PORT, () => {
-        console.log(`🚀 Astronet API server running on http://localhost:${PORT}`);
-        console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
-    });
-}
+// Start server
+app.listen(PORT, () => {
+    console.log(`🚀 Astronet API server running on http://localhost:${PORT}`);
+    console.log(`📡 Health check: http://localhost:${PORT}/api/health`);
+});
