@@ -3,7 +3,7 @@
 
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-const db = require('./config/database');
+const db = require('../config/database');
 
 async function seedDatabase() {
     try {

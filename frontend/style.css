@@ -3210,6 +3210,212 @@ a {
     box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
 }
 
+/* Compact Single-Box Time Picker Styles */
+.compact-time-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.compact-time-wrapper:focus-within {
+    border-color: var(--accent-glow);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 15px rgba(167, 139, 250, 0.2);
+}
+
+.compact-time-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 0.95rem;
+    text-align: center;
+    outline: none;
+    width: 40px;
+    padding: 0;
+    -webkit-appearance: none;
+    appearance: textfield;
+}
+
+.compact-time-input::-webkit-outer-spin-button,
+.compact-time-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.compact-time-colon {
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: bold;
+}
+
+.compact-ampm {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 40px;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.compact-ampm-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.65rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.compact-ampm-btn:hover {
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.compact-ampm-btn:first-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.compact-ampm-btn.active {
+    background: rgba(167, 139, 250, 0.2);
+    color: #a78bfa;
+}
+
+/* Custom Date Picker */
+.custom-datepicker {
+    position: relative;
+    width: 100%;
+}
+
+.custom-datepicker-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.custom-calendar {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 999;
+    background: #1a1a2e;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    width: 280px;
+    animation: calFadeIn 0.15s ease;
+}
+
+@keyframes calFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.cal-header span {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #fff;
+}
+
+.cal-nav {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 6px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.cal-nav:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.cal-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 6px;
+}
+
+.cal-weekdays span {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.35);
+    padding: 4px 0;
+    text-transform: uppercase;
+}
+
+.cal-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.cal-day {
+    text-align: center;
+    padding: 7px 0;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.8);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cal-day:hover {
+    background: rgba(167, 139, 250, 0.15);
+    color: #fff;
+}
+
+.cal-day.today {
+    color: #a78bfa;
+    font-weight: 700;
+}
+
+.cal-day.selected {
+    background: #a78bfa;
+    color: #fff;
+    font-weight: 700;
+}
+
+.cal-day.disabled {
+    color: rgba(255, 255, 255, 0.15);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.cal-day.empty {
+    cursor: default;
+}
+
+
 /* Beautify Date/Time Pickers */
 .admin-input::-webkit-calendar-picker-indicator {
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>');

@@ -227,6 +227,102 @@
             // Redirect is handled by requireMember
         }
 
+        const _d = new Date();
+        const _monthIdx = _d.getMonth();
+        const _monthFull = _d.toLocaleString('default', { month: 'long' });
+        const _monthShort = _d.toLocaleString('default', { month: 'short' });
+        const _year = _d.getFullYear();
+        const _nextMonth = new Date(_year, _d.getMonth() + 1, 1).toLocaleString('default', { month: 'short' });
+
+        const monthlyAstronomyData = [
+            { // Jan
+                c1: "Orion (The Hunter): Dominating the southern sky with its prominent belt.",
+                c2: "Gemini (The Twins): High in the east, featuring Pollux and Castor.",
+                c3: "Taurus (The Bull): Look for the bright red star Aldebaran and the Pleiades cluster.",
+                deepSky: "This month is perfect for observing the <strong>Great Orion Nebula (M42)</strong> and the <strong>Andromeda Galaxy (M31)</strong> as they reach peak altitude.",
+                moonPhase: "Waxing Gibbous", ill: "78%", set: "02:15 AM", tip: "The 'Terminator Line' is the best place to see craters in high relief today."
+            },
+            { // Feb
+                c1: "Canis Major (The Greater Dog): Contains Sirius, the brightest star in the night sky.",
+                c2: "Auriga (The Charioteer): Look high overhead for the bright, yellow star Capella.",
+                c3: "Cancer (The Crab): A faint constellation holding the beautiful Beehive Cluster.",
+                deepSky: "Look out for the <strong>Rosette Nebula</strong> in Monoceros and the brilliant sparkling of the <strong>Pleiades (M45)</strong>.",
+                moonPhase: "First Quarter", ill: "50%", set: "01:00 AM", tip: "A half-moon provides excellent high-contrast shadows for crater spotting."
+            },
+            { // Mar
+                c1: "Leo (The Lion): Look for the backward question mark forming the lion's mane.",
+                c2: "Ursa Major (The Great Bear): The Big Dipper is high in the northeast.",
+                c3: "Boötes (The Herdsman): Follow the arc of the Big Dipper's handle to find bright Arcturus.",
+                deepSky: "Spring galaxy season begins! The <strong>Leo Triplet</strong> of galaxies is perfectly placed for viewing.",
+                moonPhase: "Waning Crescent", ill: "15%", set: "04:30 PM", tip: "Darker nights ahead; it's a great time to hunt for faint deep-sky objects."
+            },
+            { // Apr
+                c1: "Virgo (The Virgin): Home to Spica, a brilliant blue-white star.",
+                c2: "Coma Berenices (Berenice's Hair): Holds a stunning open star cluster visible in dark skies.",
+                c3: "Hydra (The Water Snake): The largest constellation sprawling across the southern horizon.",
+                deepSky: "The <strong>Virgo Cluster</strong> of thousands of galaxies is now visible to those with medium to large telescopes.",
+                moonPhase: "Full Moon", ill: "100%", set: "06:45 AM", tip: "The Pink Moon outshines everything; use a moon filter to save your night vision!"
+            },
+            { // May
+                c1: "Hercules (The Hero): Look for the central 'Keystone' asterism.",
+                c2: "Corona Borealis (The Northern Crown): A beautiful semi-circle of stars.",
+                c3: "Libra (The Scales): Currently visible in the southern sky late at night.",
+                deepSky: "The magnificent <strong>Hercules Globular Cluster (M13)</strong> is rising higher, presenting a ball of half a million stars.",
+                moonPhase: "Last Quarter", ill: "50%", set: "12:30 PM", tip: "Late-night observing offers great views of the moon's western limb."
+            },
+            { // Jun
+                c1: "Scorpius (The Scorpion): Look low in the south for the red supergiant Antares.",
+                c2: "Cygnus (The Swan): Flying high in the Milky Way with the bright star Deneb.",
+                c3: "Lyra (The Harp): Contains Vega, one of the easiest bright summer stars to spot.",
+                deepSky: "The <strong>Ring Nebula (M57)</strong> in Lyra and the brilliant <strong>Lagoon Nebula (M8)</strong> in Sagittarius are stunning targets.",
+                moonPhase: "New Moon", ill: "0%", set: "07:20 PM", tip: "Perfectly dark skies mean the Milky Way core will start looking incredible!"
+            },
+            { // Jul
+                c1: "Sagittarius (The Archer): Known for the 'Teapot' asterism pointing to the Milky Way center.",
+                c2: "Aquila (The Eagle): Its bright star Altair forms the Summer Triangle with Vega and Deneb.",
+                c3: "Ophiuchus (The Serpent Bearer): A large constellation sitting right on the ecliptic.",
+                deepSky: "Sweep the rich Milky Way core for the <strong>Trifid Nebula (M20)</strong> and the <strong>Omega Nebula (M17)</strong>.",
+                moonPhase: "Waxing Crescent", ill: "22%", set: "10:15 PM", tip: "Look for 'Earthshine' on the unlit portion of the moon just after sunset."
+            },
+            { // Aug
+                c1: "Capricornus (The Sea Goat): A faint but distinct arrowhead shape in the south.",
+                c2: "Delphinus (The Dolphin): A tiny but beautiful diamond shape near the Summer Triangle.",
+                c3: "Pegasus (The Winged Horse): The 'Great Square' begins rising in the east late at night.",
+                deepSky: "The <strong>Dumbbell Nebula (M27)</strong> is a fantastic planetary nebula visible high overhead.",
+                moonPhase: "Waning Gibbous", ill: "83%", set: "10:00 AM", tip: "Perseid meteor shower peaks this month, face away from the moon for the best show!"
+            },
+            { // Sep
+                c1: "Aquarius (The Water Bearer): Contains the Helix Nebula and several globular clusters.",
+                c2: "Aries (The Ram): A small constellation rising in the east.",
+                c3: "Pisces (The Fishes): A large V-shape constellation holding the vernal equinox point.",
+                deepSky: "The <strong>Andromeda Galaxy (M31)</strong> is climbing high and can be seen with the naked eye in dark locations.",
+                moonPhase: "First Quarter", ill: "51%", set: "11:45 PM", tip: "Great terminator viewing. Look closely along the shadows for the Lunar Apennines mountain range."
+            },
+            { // Oct
+                c1: "Cassiopeia (The Queen): The famous 'W' shape is soaring extremely high in the north.",
+                c2: "Andromeda (The Princess): Contains the closest major galaxy to our own.",
+                c3: "Perseus (The Hero): Look for the 'Demon Star' Algol, an eclipsing binary.",
+                deepSky: "The <strong>Double Cluster in Perseus</strong> offers a dazzling pair of open star clusters through binoculars.",
+                moonPhase: "Full Moon", ill: "100%", set: "07:15 AM", tip: "The Hunter's Moon dominates the sky. Use higher magnification to cut through the glare."
+            },
+            { // Nov
+                c1: "Taurus (The Bull): The winter constellations begin their return to the night sky.",
+                c2: "Cetus (The Sea Monster): A sprawling constellation containing the variable star Mira.",
+                c3: "Eridanus (The River): A massive, winding constellation stretching to the southern horizon.",
+                deepSky: "The <strong>Pleiades (M45)</strong> star cluster is brilliant and high overhead, perfect for binoculars.",
+                moonPhase: "Last Quarter", ill: "48%", set: "01:30 PM", tip: "The moon rises late, giving you dark skies in the early evening for deep-space viewing."
+            },
+            { // Dec
+                c1: "Orion (The Hunter): Returns to prominence with bright stars Betelgeuse and Rigel.",
+                c2: "Canis Minor (The Lesser Dog): Contains the bright, yellow-white star Procyon.",
+                c3: "Lepus (The Hare): Crouching directly below Orion's feet.",
+                deepSky: "The <strong>Great Orion Nebula (M42)</strong> is the undisputed champion of the winter sky—a stellar nursery.",
+                moonPhase: "New Moon", ill: "0%", set: "05:00 PM", tip: "Dark winter skies are excellent for the Geminid meteor shower, the strongest shower of the year."
+            }
+        ];
+
+        const _c = monthlyAstronomyData[_monthIdx];
+
         const modalData = {
             'star-maps': {
                 title: '<span class="gradient-text">Monthly Star Maps</span>',
@@ -234,24 +330,24 @@
                     <div class="resource-detail">
                         <div class="detail-header">
                             <div class="detail-icon">🗺️</div>
-                            <p>Current Month: January 2026</p>
+                            <p>Current Month: ${_monthFull} ${_year}</p>
                         </div>
                         <div class="detail-section">
                             <h5>Visible Constellations</h5>
                             <ul>
-                                <li><strong>Orion (The Hunter):</strong> Dominating the southern sky with its prominent belt.</li>
-                                <li><strong>Gemini (The Twins):</strong> High in the east, featuring Pollux and Castor.</li>
-                                <li><strong>Taurus (The Bull):</strong> Look for the bright red star Aldebaran and the Pleiades cluster.</li>
+                                <li><strong>${_c.c1.split(':')[0]}:</strong> ${_c.c1.split(':')[1]}</li>
+                                <li><strong>${_c.c2.split(':')[0]}:</strong> ${_c.c2.split(':')[1]}</li>
+                                <li><strong>${_c.c3.split(':')[0]}:</strong> ${_c.c3.split(':')[1]}</li>
                             </ul>
                         </div>
                         <div class="detail-section">
                             <h5>Deep Sky Highlights</h5>
-                            <p>This month is perfect for observing the <strong>Great Orion Nebula (M42)</strong> and the <strong>Andromeda Galaxy (M31)</strong> as they reach peak altitude.</p>
+                            <p>${_c.deepSky}</p>
                         </div>
                         <div class="visual-placeholder star-map-visual">
                             <div class="constellation-plot"></div>
                             <div class="map-overlay">
-                                <span>Northern Hemisphere • Jan 2026</span>
+                                <span>Northern Hemisphere • ${_monthShort} ${_year}</span>
                             </div>
                         </div>
                     </div>
@@ -263,25 +359,25 @@
                     <div class="resource-detail">
                         <div class="detail-header">
                             <div class="detail-icon">🌙</div>
-                            <p>Current Phase: Waxing Gibbous</p>
+                            <p>Current Phase: ${_c.moonPhase}</p>
                         </div>
                         <div class="detail-grid">
                             <div class="phase-item">
                                 <span class="phase-label">Illumination</span>
-                                <span class="phase-value">78%</span>
+                                <span class="phase-value">${_c.ill}</span>
                             </div>
                             <div class="phase-item">
                                 <span class="phase-label">Moonset</span>
-                                <span class="phase-value">02:15 AM</span>
+                                <span class="phase-value">${_c.set}</span>
                             </div>
                             <div class="phase-item">
                                 <span class="phase-label">Next Full Moon</span>
-                                <span class="phase-value">Feb 2nd</span>
+                                <span class="phase-value">${_nextMonth} 2nd</span>
                             </div>
                         </div>
                         <div class="detail-section">
                             <h5>Observation Tip</h5>
-                            <p>The "Terminator Line" (the border between shadow and light) is the best place to see craters and mountains in high relief today.</p>
+                            <p>${_c.tip}</p>
                         </div>
                         <div class="visual-placeholder moon-visual">
                             <div class="moon-circle"></div>

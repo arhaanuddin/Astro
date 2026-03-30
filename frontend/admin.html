@@ -151,7 +151,7 @@
                 <div class="admin-card">
                     <h3 class="card-title">Quick Actions</h3>
                     <div class="quick-actions">
-                        <button class="action-btn" onclick="showSection('events')">
+                        <button class="action-btn" onclick="showSection('events'); openEventModal()">
                             <span class="action-icon">📅</span>
                             <span>Add Event</span>
                         </button>
@@ -216,7 +216,7 @@
             <section id="events" class="admin-section">
                 <div class="section-header-admin">
                     <h2>Manage Events</h2>
-                    <button class="btn btn-primary">+ Add New Event</button>
+                    <button class="btn btn-primary" onclick="openEventModal()">+ Add New Event</button>
                 </div>
 
                 <div class="admin-card">
@@ -864,9 +864,42 @@
                     if (response.success) {
                         const event = response.event;
                         document.getElementById('editEventTitle').value = event.title;
-                        document.getElementById('editEventDate').value = event.event_date.split('T')[0];
-                        document.getElementById('editStartTime').value = event.start_time;
-                        document.getElementById('editEndTime').value = event.end_time;
+                        
+                        // Parse date properly to avoid UTC timezone off-by-one errors
+                        const d = new Date(event.event_date);
+                        const ey = d.getFullYear();
+                        const em = String(d.getMonth() + 1).padStart(2, '0');
+                        const ed = String(d.getDate()).padStart(2, '0');
+                        const existingDate = `${ey}-${em}-${ed}`;
+
+                        document.getElementById('editEventDate').value = existingDate;
+                        initCalendar(existingDate);
+                        if (event.start_time) {
+                            const stParts = event.start_time.split(':');
+                            let h = parseInt(stParts[0]);
+                            const py = h >= 12 ? 'pm' : 'am';
+                            h = h % 12 || 12;
+                            document.getElementById('editStartHour').value = h.toString().padStart(2, '0');
+                            document.getElementById('editStartMinute').value = stParts[1];
+                            toggleAMPM('start', py);
+                        } else {
+                            document.getElementById('editStartHour').value = '';
+                            document.getElementById('editStartMinute').value = '';
+                            toggleAMPM('start', 'am');
+                        }
+                        if (event.end_time) {
+                            const etParts = event.end_time.split(':');
+                            let h = parseInt(etParts[0]);
+                            const py = h >= 12 ? 'pm' : 'am';
+                            h = h % 12 || 12;
+                            document.getElementById('editEndHour').value = h.toString().padStart(2, '0');
+                            document.getElementById('editEndMinute').value = etParts[1];
+                            toggleAMPM('end', py);
+                        } else {
+                            document.getElementById('editEndHour').value = '';
+                            document.getElementById('editEndMinute').value = '';
+                            toggleAMPM('end', 'am');
+                        }
                         document.getElementById('editLocation').value = event.location;
                         document.getElementById('editEventType').value = event.event_type;
                         document.getElementById('editCapacity').value = event.capacity;
@@ -880,6 +913,7 @@
             } else {
                 titleEl.textContent = 'Add New Event';
                 document.getElementById('editStatus').value = 'upcoming';
+                initCalendar(null); // starts at current month, nothing selected
             }
 
             modal.classList.add('active');
@@ -982,11 +1016,54 @@
                 eventForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
 
+                    const startHour = document.getElementById('editStartHour').value;
+                    const startMinute = document.getElementById('editStartMinute').value;
+                    const startPM = document.getElementById('editStartPM').classList.contains('active');
+
+                    const endHour = document.getElementById('editEndHour').value;
+                    const endMinute = document.getElementById('editEndMinute').value;
+                    const endPM = document.getElementById('editEndPM').classList.contains('active');
+
+                    if (!startHour || !startMinute || !endHour || !endMinute) {
+                        alert('Please fill out complete Start and End times.');
+                        return;
+                    }
+
+                    // Convert 12h to 24h
+                    const format24h = (hStr, mStr, isPM) => {
+                        let h = parseInt(hStr, 10);
+                        if (isPM && h !== 12) h += 12;
+                        if (!isPM && h === 12) h = 0;
+                        return `${h.toString().padStart(2, '0')}:${mStr}`;
+                    };
+
+                    const startTime = format24h(startHour, startMinute, startPM);
+                    const endTime = format24h(endHour, endMinute, endPM);
+
+                    if (startTime >= endTime) {
+                        alert('End Time must be after the Start Time.');
+                        return;
+                    }
+
+                    const eventDateStr = document.getElementById('editEventDate').value;
+
+                    // Only block past dates when creating a brand-new event, not when editing an existing one
+                    if (!currentEditingEventId) {
+                        const [y, m, d] = eventDateStr.split('-');
+                        const localEventDate = new Date(y, m - 1, d);
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
+                        if (localEventDate < today) {
+                            alert('Event date cannot be in the past. Please select a live date.');
+                            return;
+                        }
+                    }
+
                     const data = {
                         title: document.getElementById('editEventTitle').value,
-                        event_date: document.getElementById('editEventDate').value,
-                        start_time: document.getElementById('editStartTime').value,
-                        end_time: document.getElementById('editEndTime').value,
+                        event_date: eventDateStr,
+                        start_time: startTime,
+                        end_time: endTime,
                         location: document.getElementById('editLocation').value,
                         event_type: document.getElementById('editEventType').value,
                         capacity: parseInt(document.getElementById('editCapacity').value),
@@ -1186,6 +1263,62 @@
         }
 
 
+        // Material Time Picker AM/PM Toggle
+        function toggleAMPM(baseId, state) {
+            const amBtn = document.getElementById(`edit${baseId.charAt(0).toUpperCase() + baseId.slice(1)}AM`);
+            const pmBtn = document.getElementById(`edit${baseId.charAt(0).toUpperCase() + baseId.slice(1)}PM`);
+            if (amBtn && pmBtn) {
+                if (state === 'am') {
+                    amBtn.classList.add('active');
+                    pmBtn.classList.remove('active');
+                } else {
+                    pmBtn.classList.add('active');
+                    amBtn.classList.remove('active');
+                }
+            }
+        }
+
+        // Validate Material Time Inputs on change
+        function attachTimeValidators() {
+            const formatHour = (e) => {
+                let val = e.target.value.replace(/\D/g, ''); // strip non-numeric
+                if (val === '') return;
+                let h = parseInt(val, 10);
+                if (h > 12) h = 12;
+                if (h < 1) h = 1;
+                e.target.value = h.toString().padStart(2, '0');
+            };
+
+            const formatMinute = (e) => {
+                let val = e.target.value.replace(/\D/g, '');
+                if (val === '') return;
+                let m = parseInt(val, 10);
+                // Snap to 0, 15, 30, 45
+                m = Math.round(m / 15) * 15;
+                if (m === 60) m = 0; // if they typed 55+, rounds to 60 -> becomes 00
+                e.target.value = m.toString().padStart(2, '0');
+            };
+
+            ['editStartHour', 'editEndHour'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('blur', formatHour);
+                    // allow only numeric typing
+                    el.addEventListener('input', (e) => e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2));
+                }
+            });
+
+            ['editStartMinute', 'editEndMinute'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('blur', formatMinute);
+                    el.addEventListener('input', (e) => e.target.value = e.target.value.replace(/\D/g, '').slice(0, 2));
+                }
+            });
+        }
+
+        // Initialize validations
+        document.addEventListener('DOMContentLoaded', attachTimeValidators);
 
         // Close on Escape key
         document.addEventListener('keydown', function (e) {
@@ -1196,6 +1329,131 @@
                 closeUserModal();
             }
         });
+        // ── Custom Date Picker ────────────────────────────────────────────────
+        let _calViewYear, _calViewMonth, _calSelectedDate;
+
+        function _calTodayLocal() {
+            const n = new Date();
+            return { y: n.getFullYear(), m: n.getMonth(), d: n.getDate() };
+        }
+
+        function initCalendar(existingValue) {
+            const t = _calTodayLocal();
+            _calViewYear = t.y;
+            _calViewMonth = t.m;
+            _calSelectedDate = existingValue || null;
+
+            if (existingValue) {
+                // existingValue is YYYY-MM-DD; parse without timezone shift
+                const [ey, em, ed] = existingValue.split('-').map(Number);
+                _calViewYear = ey;
+                _calViewMonth = em - 1;
+            }
+
+            renderCalendar();
+            const txt = document.getElementById('customDateText');
+            if (txt) txt.textContent = existingValue ? formatDisplayDate(existingValue) : 'Select a date';
+        }
+
+        function formatDisplayDate(iso) {
+            const [y, m, d] = iso.split('-').map(Number);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            return `${d} ${months[m - 1]} ${y}`;
+        }
+
+        function renderCalendar() {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calMonthYear').textContent =
+                `${months[_calViewMonth]} ${_calViewYear}`;
+
+            const t = _calTodayLocal();
+            const first = new Date(_calViewYear, _calViewMonth, 1).getDay(); // 0-6 (Sun-Sat)
+            const daysInMonth = new Date(_calViewYear, _calViewMonth + 1, 0).getDate();
+
+            const container = document.getElementById('calDays');
+            container.innerHTML = '';
+
+            // Empty cells for day offset (NO overflow dates)
+            for (let i = 0; i < first; i++) {
+                const empty = document.createElement('div');
+                empty.className = 'cal-day empty';
+                container.appendChild(empty);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cell = document.createElement('div');
+                cell.className = 'cal-day';
+                cell.textContent = day;
+
+                const isoDate = `${_calViewYear}-${String(_calViewMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                const isPastDay = _calViewYear < t.y
+                    || (_calViewYear === t.y && _calViewMonth < t.m)
+                    || (_calViewYear === t.y && _calViewMonth === t.m && day < t.d);
+
+                // Always disable past dates so the user cannot pick a new past date
+                if (isPastDay) {
+                    cell.classList.add('disabled');
+                } else {
+                    cell.addEventListener('click', () => selectCalDate(isoDate, day));
+                }
+
+                // Highlight today
+                if (day === t.d && _calViewMonth === t.m && _calViewYear === t.y) {
+                    cell.classList.add('today');
+                }
+
+                // Highlight selected
+                if (_calSelectedDate === isoDate) {
+                    cell.classList.add('selected');
+                }
+
+                container.appendChild(cell);
+            }
+
+            // Disable prev arrow if already at current month
+            const prevBtn = document.getElementById('calPrev');
+            if (prevBtn) {
+                const atCurrentMonth = (_calViewYear === t.y && _calViewMonth === t.m);
+                prevBtn.disabled = atCurrentMonth;
+                prevBtn.style.opacity = prevBtn.disabled ? '0.25' : '1';
+            }
+        }
+
+        function changeCalMonth(delta) {
+            _calViewMonth += delta;
+            if (_calViewMonth > 11) { _calViewMonth = 0; _calViewYear++; }
+            if (_calViewMonth < 0) { _calViewMonth = 11; _calViewYear--; }
+            renderCalendar();
+        }
+
+        function selectCalDate(isoDate, day) {
+            _calSelectedDate = isoDate;
+            document.getElementById('editEventDate').value = isoDate;
+            document.getElementById('customDateText').textContent = formatDisplayDate(isoDate);
+            document.getElementById('customCalendar').style.display = 'none';
+            renderCalendar(); // re-render to apply selected highlight
+        }
+
+        function toggleDatepicker() {
+            const cal = document.getElementById('customCalendar');
+            if (cal.style.display === 'none') {
+                cal.style.display = 'block';
+            } else {
+                cal.style.display = 'none';
+            }
+        }
+
+        // Close calendar when clicking outside
+        document.addEventListener('click', function (e) {
+            const dp = document.getElementById('customDatepicker');
+            if (dp && !dp.contains(e.target)) {
+                const cal = document.getElementById('customCalendar');
+                if (cal) cal.style.display = 'none';
+            }
+        });
+
     </script>
 
     <!-- Registrations Modal -->
@@ -1238,7 +1496,29 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label>Date</label>
-                        <input type="date" id="editEventDate" required class="admin-input">
+                        <!-- Hidden real input to store YYYY-MM-DD for the form -->
+                        <input type="hidden" id="editEventDate" required>
+                        <!-- Custom date picker trigger -->
+                        <div class="custom-datepicker" id="customDatepicker">
+                            <div class="custom-datepicker-input admin-input" id="customDateDisplay"
+                                onclick="toggleDatepicker()">
+                                <span id="customDateText">Select a date</span>
+                                <span style="opacity:0.5;">📅</span>
+                            </div>
+                            <div class="custom-calendar" id="customCalendar" style="display:none;">
+                                <div class="cal-header">
+                                    <button type="button" class="cal-nav" id="calPrev"
+                                        onclick="changeCalMonth(-1)">&#8249;</button>
+                                    <span id="calMonthYear"></span>
+                                    <button type="button" class="cal-nav" id="calNext"
+                                        onclick="changeCalMonth(1)">&#8250;</button>
+                                </div>
+                                <div class="cal-weekdays">
+                                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                                </div>
+                                <div class="cal-days" id="calDays"></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Event Type</label>
@@ -1253,16 +1533,40 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
                         <label>Start Time</label>
-                        <input type="time" id="editStartTime" class="admin-input">
+                        <div class="compact-time-wrapper">
+                            <input type="text" id="editStartHour" class="compact-time-input" maxlength="2"
+                                inputmode="numeric" placeholder="12" required>
+                            <span class="compact-time-colon">:</span>
+                            <input type="text" id="editStartMinute" class="compact-time-input" maxlength="2"
+                                inputmode="numeric" placeholder="00" required>
+                            <div class="compact-ampm">
+                                <button type="button" id="editStartAM" class="compact-ampm-btn active"
+                                    onclick="toggleAMPM('start', 'am')">AM</button>
+                                <button type="button" id="editStartPM" class="compact-ampm-btn"
+                                    onclick="toggleAMPM('start', 'pm')">PM</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>End Time</label>
-                        <input type="time" id="editEndTime" class="admin-input">
+                        <div class="compact-time-wrapper">
+                            <input type="text" id="editEndHour" class="compact-time-input" maxlength="2"
+                                inputmode="numeric" placeholder="12" required>
+                            <span class="compact-time-colon">:</span>
+                            <input type="text" id="editEndMinute" class="compact-time-input" maxlength="2"
+                                inputmode="numeric" placeholder="00" required>
+                            <div class="compact-ampm">
+                                <button type="button" id="editEndAM" class="compact-ampm-btn active"
+                                    onclick="toggleAMPM('end', 'am')">AM</button>
+                                <button type="button" id="editEndPM" class="compact-ampm-btn"
+                                    onclick="toggleAMPM('end', 'pm')">PM</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Location</label>
-                    <input type="text" id="editLocation" class="admin-input">
+                    <input type="text" id="editLocation" class="admin-input" required>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group">
@@ -1281,7 +1585,7 @@
                 </div>
                 <div class="form-group">
                     <label>Description</label>
-                    <textarea id="editDescription" rows="3" class="admin-input"
+                    <textarea id="editDescription" rows="3" class="admin-input" required
                         style="width: 100%; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white; border-radius: 8px; padding: 10px;"></textarea>
                 </div>
                 <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">

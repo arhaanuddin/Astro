@@ -9,6 +9,393 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
+
+    <style>
+        /* ── Gallery Details Modal — all rules scoped to #galleryModal ── */
+
+        #galleryModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #galleryModal.active {
+            display: flex;
+        }
+
+        #galleryModal .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85) !important;
+            backdrop-filter: blur(4px) !important;
+            cursor: pointer;
+        }
+
+        #galleryModal .modal-container {
+            position: relative;
+            z-index: 1;
+            background: #0d1b2e !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 16px !important;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 60px rgba(124, 58, 237, 0.15) !important;
+            animation: none !important;
+            width: 90vw;
+            max-width: 1000px;
+            height: 80vh;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: row !important;
+        }
+
+        #galleryModal .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #fff !important;
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 50% !important;
+            font-size: 20px !important;
+            cursor: pointer;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transform: none !important;
+            transition: background 0.2s ease !important;
+        }
+
+        #galleryModal .modal-close:hover {
+            background: rgba(239, 68, 68, 0.6) !important;
+            transform: none !important;
+        }
+
+        #galleryModal .modal-content {
+            display: flex !important;
+            flex-direction: row !important;
+            flex: 1 !important;
+            width: 100% !important;
+            max-width: none !important;
+            height: 100% !important;
+            padding: 0 !important;
+            background: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            transform: none !important;
+            transition: none !important;
+            overflow: hidden !important;
+        }
+
+        /* ── Left: Image panel ── */
+        #galleryModal .modal-image-p {
+            flex: 1 !important;
+            background: #000 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            overflow: hidden !important;
+            position: relative !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+        }
+
+        #galleryModal .modal-image-p img {
+            max-width: 100% !important;
+            max-height: 100% !important;
+            width: auto !important;
+            height: auto !important;
+            object-fit: contain !important;
+            display: block !important;
+            transform-origin: center center;
+            user-select: none;
+            -webkit-user-drag: none;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+        }
+
+        /* Zoom hint */
+        #galleryModal .zoom-hint {
+            position: absolute !important;
+            bottom: 10px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            background: rgba(0, 0, 0, 0.55) !important;
+            color: rgba(255, 255, 255, 0.5) !important;
+            font-size: 10px !important;
+            padding: 4px 10px !important;
+            border-radius: 20px !important;
+            pointer-events: none;
+            transition: opacity 0.4s ease !important;
+            border: none !important;
+            letter-spacing: 0.04em;
+        }
+
+        /* ── Right: Info panel ── */
+        #galleryModal .modal-info-p {
+            flex: 0 0 230px !important;
+            width: 230px !important;
+            min-width: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+            position: relative !important;
+            background: linear-gradient(160deg, #0f1e33 0%, #0a1525 100%) !important;
+            border-left: 1px solid rgba(255, 255, 255, 0.07) !important;
+            padding: 0 !important;
+        }
+
+        /* Top gradient accent bar */
+        #galleryModal .info-accent-bar {
+            height: 3px;
+            background: linear-gradient(90deg, #7c3aed, #06b6d4, transparent);
+            flex-shrink: 0;
+        }
+
+        /* Decorative corner glow */
+        #galleryModal .info-corner-glow {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 160px;
+            height: 160px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Inner scrollable body */
+        #galleryModal .info-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        #galleryModal .info-body::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #galleryModal .info-body::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #galleryModal .info-body::-webkit-scrollbar-thumb {
+            background: rgba(124, 58, 237, 0.3);
+            border-radius: 10px;
+        }
+
+        /* Category eyebrow label */
+        #galleryModal .info-eyebrow {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: rgba(124, 58, 237, 0.9);
+            margin: 0 0 5px 0;
+        }
+
+        /* Title */
+        #galleryModal .info-title {
+            font-family: 'Playfair Display', serif !important;
+            color: #fff !important;
+            font-size: 1.3rem !important;
+            font-weight: 600 !important;
+            margin: 0 !important;
+            line-height: 1.35 !important;
+        }
+
+        /* Hairline divider */
+        #galleryModal .info-divider {
+            height: 1px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.1), transparent);
+            margin: 0;
+        }
+
+        /* Submitted by row */
+        #galleryModal .info-author {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #galleryModal .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.7), rgba(6, 182, 212, 0.7));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #fff;
+            flex-shrink: 0;
+            letter-spacing: 0.03em;
+        }
+
+        #galleryModal .author-meta-label {
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.35);
+            margin: 0 0 2px 0;
+        }
+
+        #galleryModal .author-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+        }
+
+        /* Description block */
+        #galleryModal .info-desc-label {
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.35);
+            margin: 0 0 7px 0;
+        }
+
+        #galleryModal .info-desc-text {
+            color: rgba(255, 255, 255, 0.6) !important;
+            font-size: 0.875rem !important;
+            line-height: 1.75 !important;
+            margin: 0 !important;
+        }
+
+        /* Category tag pill */
+        #galleryModal .info-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            background: rgba(124, 58, 237, 0.15);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #a78bfa;
+            letter-spacing: 0.03em;
+            align-self: flex-start;
+        }
+
+        #galleryModal .info-tag-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #a78bfa;
+            display: inline-block;
+        }
+
+        /* Bottom footer strip — zoom widget */
+        #galleryModal .info-footer {
+            padding: 0.6rem 1.4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            background: rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        #galleryModal .zoom-label {
+            font-size: 9.5px;
+            color: rgba(255, 255, 255, 0.28);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        #galleryModal .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        #galleryModal .zoom-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.18s ease, border-color 0.18s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        #galleryModal .zoom-btn:hover {
+            background: rgba(124, 58, 237, 0.28);
+            border-color: rgba(124, 58, 237, 0.5);
+            color: #fff;
+        }
+
+        #galleryModal .zoom-btn.zoom-reset {
+            font-size: 10px;
+            width: auto;
+            padding: 0 8px;
+            letter-spacing: 0.04em;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        #galleryModal .zoom-btn.zoom-reset:hover {
+            color: #fff;
+        }
+
+        #galleryModal .zoom-level-display {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.35);
+            min-width: 30px;
+            text-align: center;
+            letter-spacing: 0.03em;
+        }
+
+        /* Mobile */
+        @media (max-width: 640px) {
+            #galleryModal .modal-content {
+                flex-direction: column !important;
+                overflow-y: auto !important;
+            }
+
+            #galleryModal .modal-image-p {
+                flex: none !important;
+                height: 55vw !important;
+                min-height: 200px !important;
+                border-right: none !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+            }
+
+            #galleryModal .modal-info-p {
+                flex: none !important;
+                width: 100% !important;
+            }
+
+            #galleryModal .zoom-label {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -107,20 +494,19 @@
                             </div>
                         `;
 
-                        // Click event to open modal
                         div.addEventListener('click', () => {
                             openGalleryModal({
                                 url: imageUrl,
                                 title: item.title,
                                 description: item.description || 'No description available.',
-                                submitted_by: item.submitted_by_name || 'Anonymous'
+                                submitted_by: item.submitted_by_name || 'Anonymous',
+                                category: item.category || 'Astro'
                             });
                         });
 
                         galleryGrid.appendChild(div);
                     });
 
-                    // Initialize filters after items are added to DOM
                     if (typeof initGalleryFilters === 'function') {
                         initGalleryFilters();
                     }
@@ -129,24 +515,177 @@
                 }
             } catch (error) {
                 console.error('Gallery error:', error);
-                galleryGrid.innerHTML = '<p style="text-align: center; color: #f66; grid-column: 1/-1;">Failed to load. Is the backend running on port 3000?</p>';
+                galleryGrid.innerHTML = '<p style="text-align: center; color: #f66; grid-column: 1/-1;">Failed to load gallery.</p>';
             }
         });
 
-        // Modal Functions
+        /* ── Modal + Zoom ── */
         function openGalleryModal(data) {
             const modal = document.getElementById('galleryModal');
-            document.getElementById('modalImage').src = data.url;
+            const img = document.getElementById('modalImage');
+            const container = img.parentElement;
+
+            img.src = data.url;
+            img.alt = data.title;
+
+            // Title
             document.getElementById('modalTitle').textContent = data.title;
+
+            // Description
             document.getElementById('modalDescription').textContent = data.description;
+
+            // Uploader name + avatar initial
             document.getElementById('modalUploader').textContent = data.submitted_by;
+            const initial = (data.submitted_by || 'A').charAt(0).toUpperCase();
+            const avatarEl = document.getElementById('modalAvatar');
+            if (avatarEl) avatarEl.textContent = initial;
+
+            // Category tag
+            const tagEl = document.getElementById('modalCategoryTag');
+            if (tagEl) tagEl.textContent = data.category || 'Astro';
 
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
+
+            // ── Zoom state ──
+            let scale = 1;
+            let translateX = 0, translateY = 0;
+            let isDragging = false;
+            let dragStartX = 0, dragStartY = 0;
+            let startDist = 0;
+
+            function applyTransform(animate) {
+                if (animate) img.style.transition = 'transform 0.25s ease';
+                img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+                img.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
+                if (animate) setTimeout(() => img.style.transition = '', 260);
+            }
+
+            function resetZoom(animate) {
+                scale = 1; translateX = 0; translateY = 0;
+                applyTransform(animate);
+            }
+
+            img._resetZoom = () => resetZoom(false);
+
+            // Show hint briefly
+            const hint = document.getElementById('zoomHint');
+            if (hint) { hint.style.opacity = '1'; setTimeout(() => hint.style.opacity = '0', 2200); }
+
+            // ── Zoom widget buttons ──
+            const zoomDisplay = document.getElementById('zoomLevelDisplay');
+            function updateZoomDisplay() {
+                if (zoomDisplay) zoomDisplay.textContent = Math.round(scale * 100) + '%';
+            }
+            updateZoomDisplay();
+
+            const btnZoomIn = document.getElementById('btnZoomIn');
+            const btnZoomOut = document.getElementById('btnZoomOut');
+            const btnZoomReset = document.getElementById('btnZoomReset');
+
+            if (btnZoomIn) {
+                btnZoomIn._onclick = () => {
+                    scale = Math.min(scale * 1.25, 5);
+                    applyTransform(true);
+                    updateZoomDisplay();
+                };
+                btnZoomIn.addEventListener('click', btnZoomIn._onclick);
+            }
+            if (btnZoomOut) {
+                btnZoomOut._onclick = () => {
+                    scale = Math.max(scale / 1.25, 1);
+                    if (scale === 1) { translateX = 0; translateY = 0; }
+                    applyTransform(true);
+                    updateZoomDisplay();
+                };
+                btnZoomOut.addEventListener('click', btnZoomOut._onclick);
+            }
+            if (btnZoomReset) {
+                btnZoomReset._onclick = () => {
+                    resetZoom(true);
+                    updateZoomDisplay();
+                };
+                btnZoomReset.addEventListener('click', btnZoomReset._onclick);
+            }
+
+
+            // Store refs for cleanup
+            modal._btnZoomIn = btnZoomIn;
+            modal._btnZoomOut = btnZoomOut;
+            modal._btnZoomReset = btnZoomReset;
+
+            // ── Mouse drag to pan ──
+            img._onmousedown = (e) => {
+                if (scale <= 1) return;
+                isDragging = true;
+                dragStartX = e.clientX - translateX;
+                dragStartY = e.clientY - translateY;
+                img.style.cursor = 'grabbing';
+                e.preventDefault();
+            };
+            img.addEventListener('mousedown', img._onmousedown);
+
+            window._onmousemove = (e) => {
+                if (!isDragging) return;
+                translateX = e.clientX - dragStartX;
+                translateY = e.clientY - dragStartY;
+                applyTransform(false);
+            };
+            window.addEventListener('mousemove', window._onmousemove);
+
+            window._onmouseup = () => {
+                isDragging = false;
+                if (scale > 1) img.style.cursor = 'grab';
+            };
+            window.addEventListener('mouseup', window._onmouseup);
+
+            // ── Pinch to zoom (touch) ──
+            container._ontouchstart = (e) => {
+                if (e.touches.length === 2) {
+                    startDist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                }
+            };
+            container.addEventListener('touchstart', container._ontouchstart);
+
+            container._ontouchmove = (e) => {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const dist = Math.hypot(
+                        e.touches[0].clientX - e.touches[1].clientX,
+                        e.touches[0].clientY - e.touches[1].clientY
+                    );
+                    scale = Math.min(Math.max(scale * (dist / startDist), 1), 5);
+                    startDist = dist;
+                    if (scale === 1) { translateX = 0; translateY = 0; }
+                    applyTransform(false);
+                }
+            };
+            container.addEventListener('touchmove', container._ontouchmove, { passive: false });
         }
 
         function closeGalleryModal() {
             const modal = document.getElementById('galleryModal');
+            const img = document.getElementById('modalImage');
+            const container = img.parentElement;
+
+            if (img._resetZoom) img._resetZoom();
+
+
+            if (img._onmousedown) img.removeEventListener('mousedown', img._onmousedown);
+            if (window._onmousemove) window.removeEventListener('mousemove', window._onmousemove);
+            if (window._onmouseup) window.removeEventListener('mouseup', window._onmouseup);
+            if (container._ontouchstart) container.removeEventListener('touchstart', container._ontouchstart);
+            if (container._ontouchmove) container.removeEventListener('touchmove', container._ontouchmove);
+
+            // Clean up zoom buttons
+            const m = document.getElementById('galleryModal');
+            if (m._btnZoomIn && m._btnZoomIn._onclick) m._btnZoomIn.removeEventListener('click', m._btnZoomIn._onclick);
+            if (m._btnZoomOut && m._btnZoomOut._onclick) m._btnZoomOut.removeEventListener('click', m._btnZoomOut._onclick);
+            if (m._btnZoomReset && m._btnZoomReset._onclick) m._btnZoomReset.removeEventListener('click', m._btnZoomReset._onclick);
+
             modal.classList.remove('active');
             document.body.style.overflow = '';
         }
@@ -157,28 +696,89 @@
         });
     </script>
 
-    <!-- Gallery Details Modal -->
+    <!-- ════════════════════════════════════════
+         Gallery Details Modal
+         CHANGES: Rebuilt info panel with accent bar,
+         corner glow, avatar, eyebrow label, dividers,
+         description label, category tag pill, footer strip
+         ════════════════════════════════════════ -->
     <div id="galleryModal" class="gallery-details-modal">
         <div class="modal-overlay" onclick="closeGalleryModal()"></div>
         <div class="modal-container">
             <button class="modal-close" onclick="closeGalleryModal()">&times;</button>
+
             <div class="modal-content">
+
+                <!-- Left: Image -->
                 <div class="modal-image-p">
                     <img id="modalImage" src="" alt="Gallery Image">
+                    <div class="zoom-hint" id="zoomHint">Drag to pan</div>
+
                 </div>
+
+                <!-- Right: Info Panel (redesigned) -->
                 <div class="modal-info-p">
-                    <h2 id="modalTitle"></h2>
-                    <div class="modal-meta">
-                        <span class="meta-label">Submitted by:</span>
-                        <span id="modalUploader" class="meta-value"></span>
+
+                    <!-- Top gradient accent bar -->
+                    <div class="info-accent-bar"></div>
+
+                    <!-- Decorative corner glow -->
+                    <div class="info-corner-glow"></div>
+
+                    <!-- Scrollable body -->
+                    <div class="info-body">
+
+                        <!-- Eyebrow + Title -->
+                        <div>
+                            <p class="info-eyebrow">Gallery</p>
+                            <h2 class="info-title" id="modalTitle"></h2>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="info-divider"></div>
+
+                        <!-- Author row with avatar -->
+                        <div class="info-author">
+                            <div class="author-avatar" id="modalAvatar">A</div>
+                            <div>
+                                <p class="author-meta-label">Submitted by</p>
+                                <p class="author-name" id="modalUploader"></p>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="info-divider"></div>
+
+                        <!-- Description -->
+                        <div>
+                            <p class="info-desc-label">About this photo</p>
+                            <p class="info-desc-text" id="modalDescription"></p>
+                        </div>
+
+                        <!-- Category tag pill -->
+                        <div class="info-tag">
+                            <span class="info-tag-dot"></span>
+                            <span id="modalCategoryTag">Astro</span>
+                        </div>
+
                     </div>
-                    <div class="modal-description">
-                        <p id="modalDescription"></p>
+
+                    <!-- Footer strip — zoom controls -->
+                    <div class="info-footer">
+                        <p class="zoom-label">Zoom</p>
+                        <div class="zoom-controls">
+                            <button class="zoom-btn" id="btnZoomOut" title="Zoom out">&#8722;</button>
+                            <span class="zoom-level-display" id="zoomLevelDisplay">100%</span>
+                            <button class="zoom-btn" id="btnZoomIn" title="Zoom in">&#43;</button>
+                            <button class="zoom-btn zoom-reset" id="btnZoomReset" title="Reset zoom">Reset</button>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
+
 </body>
 
 </html>

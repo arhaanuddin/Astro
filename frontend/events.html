@@ -176,25 +176,38 @@
                 try {
                     const response = await AstroAPI.events.getAll();
                     if (response.success && response.events.length > 0) {
-                        eventsContainer.innerHTML = '';
-                        featuredContainer.innerHTML = '';
+                        const now = new Date();
+                        const activeEvents = response.events.filter(e => {
+                            if (e.status === 'completed' || e.status === 'cancelled') return false;
+                            const evDate = new Date(e.event_date);
+                            evDate.setHours(23, 59, 59, 999);
+                            return evDate >= now;
+                        });
 
-                        // Find featured event (first one marked as such or just the first)
-                        const featured = response.events.find(e => e.is_featured) || response.events[0];
-                        const others = response.events.filter(e => e.id !== featured.id);
+                        if (activeEvents.length > 0) {
+                            eventsContainer.innerHTML = '';
+                            featuredContainer.innerHTML = '';
 
-                        // Render featured
-                        if (featuredContainer) featuredContainer.innerHTML = renderFeaturedEvent(featured);
+                            // Find featured event
+                            const featured = activeEvents.find(e => e.is_featured) || activeEvents[0];
+                            const others = activeEvents.filter(e => e.id !== featured.id);
 
-                        // Render others
-                        if (eventsContainer) {
-                            if (others.length > 0) {
-                                others.forEach(event => {
-                                    eventsContainer.innerHTML += renderEventCard(event);
-                                });
-                            } else {
-                                eventsContainer.innerHTML = '<p style="text-align: center; color: #888;">No other upcoming events.</p>';
+                            // Render featured
+                            if (featuredContainer) featuredContainer.innerHTML = renderFeaturedEvent(featured);
+
+                            // Render others
+                            if (eventsContainer) {
+                                if (others.length > 0) {
+                                    others.forEach(event => {
+                                        eventsContainer.innerHTML += renderEventCard(event);
+                                    });
+                                } else {
+                                    eventsContainer.innerHTML = '<p style="text-align: center; color: #888;">No other upcoming events.</p>';
+                                }
                             }
+                        } else {
+                            eventsContainer.innerHTML = '<p style="text-align: center; color: #888;">No upcoming events found.</p>';
+                            featuredContainer.innerHTML = '';
                         }
                     } else {
                         if (eventsContainer) eventsContainer.innerHTML = '<p style="text-align: center; color: #888;">No upcoming events found.</p>';
@@ -210,6 +223,15 @@
                 const day = date.getDate();
                 const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
                 const year = date.getFullYear();
+
+                const eventEndDate = new Date(event.event_date);
+                eventEndDate.setHours(23, 59, 59, 999);
+                const isPast = eventEndDate < new Date();
+                const isClosed = event.status === 'completed' || event.status === 'cancelled' || isPast;
+
+                const buttonHtml = isClosed 
+                    ? `<button class="btn" style="opacity: 0.5; background: #333; cursor: not-allowed;" disabled>Registration Closed</button>`
+                    : `<button onclick="openRegistrationModal(${event.id}, '${event.title.replace(/'/g, "\\'")}')" class="btn btn-primary">Register Now</button>`;
 
                 return `
                         <div class="featured-event">
@@ -229,7 +251,7 @@
                                         <span>👥 ${event.registration_count}/${event.capacity} spots filled</span>
                                         <span>🔭 ${event.event_type}</span>
                                     </div>
-                                    <button onclick="openRegistrationModal(${event.id}, '${event.title.replace(/'/g, "\\'")}')" class="btn btn-primary">Register Now</button>
+                                    ${buttonHtml}
                                 </div>
                             </div>
                         </div>
@@ -240,6 +262,15 @@
                 const date = new Date(event.event_date);
                 const day = date.getDate();
                 const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+
+                const eventEndDate = new Date(event.event_date);
+                eventEndDate.setHours(23, 59, 59, 999);
+                const isPast = eventEndDate < new Date();
+                const isClosed = event.status === 'completed' || event.status === 'cancelled' || isPast;
+
+                const buttonHtml = isClosed
+                    ? `<button class="event-register-btn" disabled style="opacity:0.5; cursor:not-allowed;">Closed</button>`
+                    : `<button onclick="openRegistrationModal(${event.id}, '${event.title.replace(/'/g, "\\'")}')" class="event-register-btn">Register</button>`;
 
                 return `
                         <div class="event-card">
@@ -259,7 +290,7 @@
                                     <span>👥 ${event.capacity - event.registration_count} spots available</span>
                                 </div>
                             </div>
-                            <button onclick="openRegistrationModal(${event.id}, '${event.title.replace(/'/g, "\\'")}')" class="event-register-btn">Register</button>
+                            ${buttonHtml}
                         </div>
                     `;
             }

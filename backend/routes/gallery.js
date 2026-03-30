@@ -155,6 +155,13 @@ router.post('/submit', authenticateToken, upload.single('image'), async (req, re
             });
         }
 
+        if (!description || description.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                error: 'Description is required'
+            });
+        }
+
         if (title.length > 100) {
             return res.status(400).json({
                 success: false,

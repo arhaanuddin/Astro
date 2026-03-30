@@ -120,10 +120,10 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { title, description, event_date, start_time, end_time, location, event_type, capacity, is_featured } = req.body;
 
-        if (!title || !event_date || !start_time || !end_time || !location) {
+        if (!title || !description || !event_date || !start_time || !end_time || !location) {
             return res.status(400).json({
                 success: false,
-                error: 'Title, date, time, and location are required'
+                error: 'Title, description, date, time, and location are required'
             });
         }
 
@@ -169,6 +169,13 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
 router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
     try {
         const { title, description, event_date, start_time, end_time, location, event_type, capacity, is_featured, status } = req.body;
+
+        if (!title || !description || !event_date || !start_time || !end_time || !location) {
+            return res.status(400).json({
+                success: false,
+                error: 'Title, description, date, time, and location are required'
+            });
+        }
 
         await db.execute(
             `UPDATE events SET title = ?, description = ?, event_date = ?, start_time = ?, end_time = ?, 
@@ -249,6 +256,23 @@ router.post('/:id/register', authenticateToken, async (req, res) => {
         }
 
         const event = events[0];
+
+        if (event.status === 'completed' || event.status === 'cancelled') {
+            return res.status(400).json({
+                success: false,
+                error: `Event is ${event.status} and cannot accept registrations`
+            });
+        }
+
+        const eventDate = new Date(event.event_date);
+        eventDate.setHours(23, 59, 59, 999);
+        if (eventDate < new Date()) {
+            return res.status(400).json({
+                success: false,
+                error: 'Event date has passed'
+            });
+        }
+
         if (event.registration_count >= event.capacity) {
             return res.status(400).json({
                 success: false,
